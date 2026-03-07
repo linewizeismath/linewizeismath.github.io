@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Celestial Browser</title>
+    <title>App For Kids!</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Vt323:wght@300;400;500;700&display=swap');
 
         :root {
             --aurora-green: #000000;
@@ -23,7 +23,7 @@
             margin: 0;
             height: 100vh;
             background: #050714;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Vt323', sans-serif;
             overflow: hidden;
             color: var(--text-main);
             display: flex;
@@ -397,7 +397,7 @@
             <div id="more-menu">
                 <button class="menu-item" onclick="tabManager.injectEruda()">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>
-                    Inject Eruda
+                    Inject Dev Tools
                 </button>
             </div>
         </div>
@@ -406,8 +406,8 @@
     <div id="browser-viewport">
         <div id="home-screen">
             <div class="home-card">
-                <div class="home-title">Celestial</div>
-                <div class="home-subtitle">67 or 21?</div>
+                <div class="home-title">NXON</div>
+                <div class="home-subtitle">NXON ON TOP!!</div>
                 <input type="text" class="home-input" placeholder="Search or Type URL Here" onkeydown="if(event.key==='Enter') tabManager.navigate(this.value)">
             </div>
         </div>
