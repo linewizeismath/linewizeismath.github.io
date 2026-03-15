@@ -356,25 +356,58 @@
 </footer>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   🎮 ADD YOUR GAMES HERE
-   Copy one block and fill in your own values:
-     name  — display name shown under the card
-     cover — URL to the thumbnail/cover image
-     url   — the embed/game URL that loads inside the popup
+/* ── ANTI-DEVTOOLS DETERRENTS ── */
 
-   Example:
-   { name: "My Game", cover: "https://i.imgur.com/xxxx.png", url: "https://example.com/game" },
-═══════════════════════════════════════════════════════ */
+// 1. Disable right-click context menu
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// 2. Block common devtools keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const key = e.key;
+  const ctrl = e.ctrlKey || e.metaKey;
+  const shift = e.shiftKey;
+
+  // F12
+  if (key === 'F12') { e.preventDefault(); return false; }
+  // Ctrl+Shift+I  (devtools)
+  if (ctrl && shift && key === 'I') { e.preventDefault(); return false; }
+  // Ctrl+Shift+J  (console)
+  if (ctrl && shift && key === 'J') { e.preventDefault(); return false; }
+  // Ctrl+Shift+C  (inspector)
+  if (ctrl && shift && key === 'C') { e.preventDefault(); return false; }
+  // Ctrl+U  (view source)
+  if (ctrl && key === 'u') { e.preventDefault(); return false; }
+  // Ctrl+S  (save page)
+  if (ctrl && key === 's') { e.preventDefault(); return false; }
+  // Ctrl+P  (print / also reveals source sometimes)
+  if (ctrl && key === 'p') { e.preventDefault(); return false; }
+});
+
+// 3. Detect devtools open via window size difference and warn
+(function devtoolsDetect(){
+  const threshold = 160;
+  function check(){
+    if(
+      window.outerWidth - window.innerWidth > threshold ||
+      window.outerHeight - window.innerHeight > threshold
+    ){
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;font-family:Orbitron,monospace;color:#fff;font-size:1.2rem;letter-spacing:0.2em;text-align:center;padding:2rem;">ACCESS DENIED</div>';
+    }
+  }
+  setInterval(check, 1000);
+})();
+
+// 4. Clear console periodically so any logged info disappears
+setInterval(() => { console.clear(); }, 1000);
+
 const GAMES = [
 
-  // ── EXAMPLE GAME ── copy this block and edit it to add a new game
+  // ── GAME ── copy this block and edit it to add a new game
   {
     name:  "Bad Parenting 1",
     cover: "https://cdn.jsdelivr.net/gh/gn-math/covers@main/166.png",
     url:   "g/bp1.html"
   },
-
 ];
 /* ═══════════════════════════════════════════════════════ */
 
