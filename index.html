@@ -227,7 +227,70 @@
     flex-shrink: 0;
   }
 
-  /* ── FOOTER ── */
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 1.6rem;
+  }
+
+  .nav-tab {
+    display: flex; align-items: center; gap: 7px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    padding: 6px 14px;
+    text-transform: uppercase;
+    transition: color .18s, border-color .18s, background .18s;
+    text-decoration: none;
+  }
+
+  .nav-tab:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-tab.active {
+    color: #fff;
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.07);
+  }
+
+  .nav-tab svg {
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.5));
+  }
+
+  /* ── CHAT OVERLAY ── */
+  #chat-overlay {
+    position: fixed;
+    top: 66px;
+    left: 0; right: 0; bottom: 0;
+    z-index: 90;
+    background: #000;
+    display: none;
+    flex-direction: column;
+  }
+
+  #chat-overlay.visible {
+    display: flex;
+  }
+
+  #chat-iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    display: block;
+    background: #000;
+  }
   footer {
     position: relative; z-index: 1;
     border-top: 1px solid var(--border);
@@ -320,6 +383,31 @@
         <span class="logo-sub">Game Vault</span>
       </div>
     </a>
+
+    <!-- NAV TABS -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" id="tab-games">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round">
+          <rect x="1" y="3" width="11" height="8" rx="3"/>
+          <path d="M3.5 7h2M4.5 6v2"/>
+          <circle cx="8.5" cy="6.5" r=".6" fill="white"/>
+          <circle cx="10" cy="7.5" r=".6" fill="white"/>
+        </svg>
+        Games
+      </button>
+      <button class="nav-tab" id="tab-chat">
+        <!-- glowy chat bubble SVG -->
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"
+             style="filter:drop-shadow(0 0 5px rgba(255,255,255,0.7))">
+          <path d="M1 2.5A1.5 1.5 0 012.5 1h9A1.5 1.5 0 0113 2.5v6A1.5 1.5 0 0111.5 10H8l-3 3v-3H2.5A1.5 1.5 0 011 8.5v-6z"
+                stroke="white" stroke-width="1.4" stroke-linejoin="round"/>
+          <circle cx="4.5" cy="5.5" r=".8" fill="white"/>
+          <circle cx="7"   cy="5.5" r=".8" fill="white"/>
+          <circle cx="9.5" cy="5.5" r=".8" fill="white"/>
+        </svg>
+        Movies
+      </button>
+    </nav>
     <div class="header-right">
       <span class="count-badge" id="count-badge">0 games</span>
       <div class="search-wrap">
@@ -349,6 +437,15 @@
     <div id="grid"></div>
     <div id="empty" style="display:none; text-align:center; padding:4rem 2rem; color:var(--muted); font-size:1rem; letter-spacing:0.1em;">No games found.</div>
   </section>
+</div>
+
+<!-- CHAT OVERLAY -->
+<div id="chat-overlay">
+  <iframe id="chat-iframe"
+    src=""
+    allowfullscreen
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals">
+  </iframe>
 </div>
 
 <footer>
@@ -604,7 +701,44 @@ backdrop.addEventListener('click', e=>{ if(e.target===backdrop) closeModal(); })
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 
-/* ── SEARCH + SORT ── */
+/* ── TAB SWITCHING ── */
+const tabGames   = document.getElementById('tab-games');
+const tabChat    = document.getElementById('tab-chat');
+const chatOverlay= document.getElementById('chat-overlay');
+const chatIframe = document.getElementById('chat-iframe');
+const mainApp    = document.getElementById('app');
+const mainFooter = document.querySelector('footer');
+
+tabGames.addEventListener('click', () => {
+  tabGames.classList.add('active');
+  tabChat.classList.remove('active');
+  chatOverlay.classList.remove('visible');
+  mainApp.style.display = '';
+  mainFooter.style.display = '';
+  // unload chat to prevent it running in background
+  chatIframe.src = '';
+});
+
+tabChat.addEventListener('click', async () => {
+  tabChat.classList.add('active');
+  tabGames.classList.remove('active');
+  mainApp.style.display = 'none';
+  mainFooter.style.display = 'none';
+  chatOverlay.classList.add('visible');
+
+  // Load chat.html as a blob so source can't be stolen
+  if(!chatIframe.src || chatIframe.src === window.location.href){
+    try{
+      const html = await (await fetch('movie.html?t='+Date.now())).text();
+      const blob = new Blob([html], { type: 'text/html' });
+      const burl = URL.createObjectURL(blob);
+      chatIframe.src = burl;
+      setTimeout(() => URL.revokeObjectURL(burl), 5000);
+    }catch(e){
+      chatIframe.srcdoc = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:rgba(255,255,255,0.4);font-family:sans-serif;font-size:0.9rem;letter-spacing:0.1em;">chat.html not found</div>';
+    }
+  }
+});
 document.getElementById('search').addEventListener('input', e=>{ searchQ=e.target.value; render(); });
 document.querySelectorAll('.chip').forEach(btn=>{
   btn.addEventListener('click',()=>{
