@@ -400,16 +400,31 @@ document.addEventListener('keydown', e => {
 // 4. Clear console periodically so any logged info disappears
 setInterval(() => { console.clear(); }, 1000);
 
-const GAMES = [
 
-  // ── GAME ── copy this block and edit it to add a new game
-  {
-    name:  "Bad Parenting 1",
-    cover: "https://cdn.jsdelivr.net/gh/gn-math/covers@main/166.png",
-    url:   "g/bp1.html"
-  },
-];
-/* ═══════════════════════════════════════════════════════ */
+/* ── GN-MATH CDN BASES ── */
+const COVER_URL = 'https://cdn.jsdelivr.net/gh/gn-math/covers@main';
+const HTML_URL  = 'https://cdn.jsdelivr.net/gh/gn-math/html@main';
+
+let GAMES = [];
+
+async function fetchGames(){
+  try{
+    let url = 'https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json';
+    try{
+      const r = await fetch('https://api.github.com/repos/gn-math/assets/commits?t='+Date.now());
+      if(r.ok){ const j=await r.json(); const s=j[0]?.sha; if(s) url=`https://cdn.jsdelivr.net/gh/gn-math/assets@${s}/zones.json`; }
+    }catch(_){}
+    const zones = await (await fetch(url+'?t='+Date.now())).json();
+    GAMES = zones
+      .filter(z => z.id !== -1 && z.id !== 1 && z.id !== 64)
+      .map(z => ({
+        name:  z.name,
+        cover: (z.cover||'').replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL),
+        url:   (z.url||'').replace('{COVER_URL}', COVER_URL).replace('{HTML_URL}', HTML_URL)
+      }));
+  }catch(e){ console.warn('Failed to load games:', e); }
+  render();
+}
 
 
 /* ── FIREFLIES ── */
@@ -497,7 +512,7 @@ function render(){
   });
 }
 
-render();
+fetchGames();
 
 
 /* ── MODAL ── */
@@ -510,10 +525,14 @@ const fsBtn      = document.getElementById('fs-btn');
 const closeBtn   = document.getElementById('modal-close');
 
 let muted = false, lastVol = 100;
+let currentBlobUrl = null;
 
-function openModal(game){
-  modalTitle.textContent = game.name;
-  iframe.src = game.url;
+// Mount a blob URL into the modal iframe and show it
+function mountBlob(burl, title){
+  if(currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+  currentBlobUrl = burl;
+  modalTitle.textContent = title;
+  iframe.src = burl;
   backdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
   muted=false; lastVol=100;
@@ -522,10 +541,29 @@ function openModal(game){
   setVolIcon(100);
 }
 
+// Fetch game HTML, turn into blob, mount — mirrors the GN Store method
+async function openModal(game){
+  const url = game.url;
+  try{
+    if(url.startsWith('http') && !url.includes('cdn.jsdelivr.net')){
+      // External URL — just load directly
+      mountBlob(url, game.name.toUpperCase());
+      return;
+    }
+    const html = await (await fetch(url + '?t=' + Date.now())).text();
+    const blob = new Blob([html], { type: 'text/html' });
+    const burl = URL.createObjectURL(blob);
+    mountBlob(burl, game.name.toUpperCase());
+    setTimeout(() => URL.revokeObjectURL(burl), 5000);
+  }catch(e){
+    alert('Failed to load game: ' + e.message);
+  }
+}
+
 function closeModal(){
   backdrop.classList.remove('open');
   document.body.style.overflow = '';
-  setTimeout(()=>{ iframe.src=''; }, 300);
+  setTimeout(()=>{ iframe.src = ''; }, 300);
 }
 
 function trySetVol(v){
