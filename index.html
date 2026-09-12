@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -855,6 +856,17 @@
     </div>
 
     <div class="settings-row">
+      <span class="s-label">Content</span>
+      <div class="settings-toggle">
+        <label class="switch">
+          <input type="checkbox" id="adult-content-toggle">
+          <span class="slider-toggle"></span>
+        </label>
+        <span>Show 18+ content in browsing &amp; search (off by default)</span>
+      </div>
+    </div>
+
+    <div class="settings-row">
       <span class="s-label">Account</span>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="danger-btn" id="settings-signout">Sign out of all devices</button>
@@ -1225,7 +1237,7 @@ async function tmdbLookup(entry){
 
   try{
     const searchType = entry.type === 'tv' ? 'tv' : 'movie';
-    const searchRes = await fetch(`https://api.themoviedb.org/3/search/${searchType}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(entry.tmdbTitle)}`);
+    const searchRes = await fetch(`https://api.themoviedb.org/3/search/${searchType}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(entry.tmdbTitle)}${adultParam()}`);
     const searchData = await searchRes.json();
     const hit = searchData.results && searchData.results[0];
     if(!hit) return null;
@@ -1317,7 +1329,7 @@ const DISCOVER_CATEGORIES = [
 
 async function tmdbFetchPage(path, page){
   const sep = path.includes('?') ? '&' : '?';
-  const url = `https://api.themoviedb.org/3/${path}${sep}api_key=${TMDB_API_KEY}&page=${page}`;
+  const url = `https://api.themoviedb.org/3/${path}${sep}api_key=${TMDB_API_KEY}&page=${page}${adultParam()}`;
   const res = await fetch(url);
   const data = await res.json();
   return data.results || [];
@@ -1475,7 +1487,7 @@ const TMDB_ANIME_CATEGORIES = [
 async function fetchTMDBAnimeCategory(cat){
   if(!TMDB_API_KEY) return [];
   try{
-    const res = await fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_keywords=210024&sort_by=${cat.sortBy}`);
+    const res = await fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_keywords=210024&sort_by=${cat.sortBy}${adultParam()}`);
     const data = await res.json();
     return (data.results||[]).filter(r=>r.poster_path).slice(0,20).map(r=>mapTMDBItem(r,'tv',cat.label));
   }catch(e){
@@ -1541,6 +1553,17 @@ function setPremium(val){
 }
 function gateList(arr){
   return isPremium() ? arr : arr.slice(0, FREE_CATALOG_LIMIT);
+}
+
+/* ===========================================================
+   18+ CONTENT — off by default. Controls TMDB's include_adult
+   flag across all catalog/search requests.
+=========================================================== */
+function adultContentEnabled(){
+  return !!(currentUser && LS.get(userKey(currentUser.uid, 'adultContent'), false));
+}
+function adultParam(){
+  return `&include_adult=${adultContentEnabled() ? 'true' : 'false'}`;
 }
 
 function getProfiles(uid){
@@ -1761,6 +1784,7 @@ function enterApp(){
   switchView('home');
   const autoplay = LS.get(userKey(currentUser.uid,'autoplay'), false);
   document.getElementById('autoplay-toggle').checked = autoplay;
+  document.getElementById('adult-content-toggle').checked = adultContentEnabled();
 
   if(!tmdbDataLoaded){
     if(!TMDB_API_KEY) toast('Tip: add a free TMDB API key in the code for real posters + the full catalog');
@@ -1930,8 +1954,8 @@ document.querySelectorAll('.genre-pill').forEach(pill=>{
     }
     try{
       const [movies, tv] = await Promise.all([
-        fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`).then(r=>r.json()),
-        fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`).then(r=>r.json())
+        fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}`).then(r=>r.json()),
+        fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}`).then(r=>r.json())
       ]);
       const items = [
         ...(movies.results||[]).filter(i=>i.poster_path).map(i=>mapTMDBItem(i,'movie',pill.textContent.trim())),
@@ -1971,7 +1995,7 @@ async function loadDiscoverMore(){
   try{
     const results = await Promise.all(DISCOVER_MORE_ENDPOINTS.map(ep=>{
       const type = ep.startsWith('tv') ? 'tv' : 'movie';
-      return fetch(`https://api.themoviedb.org/3/${ep}?api_key=${TMDB_API_KEY}&page=${discoverMorePage}`)
+      return fetch(`https://api.themoviedb.org/3/${ep}?api_key=${TMDB_API_KEY}&page=${discoverMorePage}${adultParam()}`)
         .then(r=>r.json()).then(d=>({ type, results: d.results||[] }));
     }));
     results.forEach(({type, results})=>{
@@ -2042,7 +2066,7 @@ async function runSearch(query){
   let liveResults = [];
   if(TMDB_API_KEY){
     try{
-      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`);
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}${adultParam()}`);
       const data = await res.json();
       liveResults = (data.results || [])
         .filter(r => (r.media_type === 'movie' || r.media_type === 'tv') && r.poster_path)
@@ -2213,6 +2237,20 @@ document.getElementById('settings-pfp-input').addEventListener('change', (e)=>{
 document.getElementById('autoplay-toggle').addEventListener('change', (e)=>{
   LS.set(userKey(currentUser.uid,'autoplay'), e.target.checked);
   toast(e.target.checked ? 'Autoplay turned on' : 'Autoplay turned off');
+});
+
+document.getElementById('adult-content-toggle').addEventListener('change', (e)=>{
+  LS.set(userKey(currentUser.uid,'adultContent'), e.target.checked);
+  toast(e.target.checked ? '18+ content enabled' : '18+ content disabled');
+  // clear cached catalog so the new filter takes effect right away instead of waiting on the 24h cache
+  localStorage.removeItem('vixflix_discover_catalog_v1');
+  DISCOVERED_MOVIES = [];
+  discoverLoaded = false;
+  loadDiscoverCatalog().then(()=>{
+    renderHero();
+    const activeLink = document.querySelector('.nav-link.active');
+    switchView(activeLink ? activeLink.dataset.view : 'home');
+  });
 });
 
 function renderSettingsProfiles(){
