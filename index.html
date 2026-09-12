@@ -346,6 +346,21 @@
 
   .row-empty-note{color:var(--text-dim);font-size:13px;padding-right:32px;}
 
+  .upsell-banner{
+    display:flex;align-items:center;gap:16px;margin:0 32px 28px;padding:16px 20px;
+    background:linear-gradient(135deg,#1a1a1a,#141414);border:1px solid rgba(255,215,0,.3);
+    border-radius:10px;flex-wrap:wrap;
+  }
+  .upsell-banner svg{width:32px;height:32px;flex-shrink:0;}
+  .upsell-text{flex:1;min-width:200px;font-size:13.5px;color:#ddd;}
+  .upsell-text strong{color:#fff;}
+  .upsell-btn{
+    background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border:none;
+    padding:10px 22px;border-radius:6px;font-size:13px;font-weight:800;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;
+  }
+  .upsell-btn:hover{filter:brightness(1.1);}
+
   /* ---- Search results ---- */
   #search-view{padding:calc(var(--nav-h) + 30px) 32px 60px;}
   #search-view h2{font-weight:600;font-size:20px;margin-bottom:20px;}
@@ -367,17 +382,78 @@
   .settings-row .s-info{flex:1;min-width:200px;}
   .settings-row .s-name{font-size:17px;font-weight:600;}
   .settings-row .s-email{color:var(--text-dim);font-size:13.5px;}
-  .theme-swatches{display:flex;gap:10px;flex-wrap:wrap;}
-  .theme-swatch{
-    width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;
-    transition:.2s ease;position:relative;padding:0;
+
+  /* ---- PREMIUM PANEL ---- */
+  .premium-panel{
+    position:relative;overflow:hidden;margin:20px 0;padding:22px 24px;
+    background:linear-gradient(160deg,#1a1a1a 0%,#141414 100%);
+    border:1px solid rgba(255,215,0,.25);border-radius:12px;
   }
-  .theme-swatch:hover{transform:scale(1.12);}
-  .theme-swatch.active{border-color:#fff;transform:scale(1.1);}
-  .theme-swatch.active::after{
-    content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:14px;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.6);
+  .premium-panel-glow{
+    position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,215,0,.18) 0%,transparent 70%);pointer-events:none;
   }
+  .premium-panel-head{display:flex;align-items:center;gap:14px;position:relative;z-index:1;margin-bottom:16px;}
+  .premium-crown-svg{width:42px;height:42px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(255,215,0,.4));}
+  .premium-panel-title{
+    font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;
+    background:linear-gradient(135deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .premium-panel-sub{font-size:12.5px;color:var(--text-dim);margin-top:2px;}
+  .premium-perks{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;position:relative;z-index:1;}
+  .premium-perk{display:flex;align-items:center;gap:10px;font-size:13px;color:#e5e5e5;}
+  .premium-perk svg{width:18px;height:18px;flex-shrink:0;color:#FFD700;}
+  .premium-redeem{position:relative;z-index:1;}
+  .premium-redeem-row{
+    display:flex;align-items:center;gap:8px;background:#0f0f0f;border:1px solid #3a3a3a;
+    border-radius:8px;padding:6px 6px 6px 12px;flex-wrap:wrap;
+  }
+  .premium-key-svg{width:18px;height:18px;color:#FFD700;flex-shrink:0;}
+  #premium-code-input{
+    flex:1;min-width:120px;background:transparent;border:none;color:#fff;font-size:14px;
+    padding:8px 4px;outline:none;letter-spacing:1px;font-weight:600;
+  }
+  #premium-code-input::placeholder{color:#666;letter-spacing:1px;}
+  .premium-redeem-btn{
+    background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border:none;
+    padding:9px 20px;border-radius:6px;font-size:13px;font-weight:800;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;
+  }
+  .premium-redeem-btn:hover{filter:brightness(1.1);}
+  .premium-redeem-msg{font-size:12.5px;margin-top:8px;min-height:16px;}
+  .premium-redeem-msg.error{color:#ff6b6b;}
+  .premium-redeem-msg.success{color:#2ecc71;}
+  .premium-active-block{
+    display:flex;align-items:center;gap:10px;position:relative;z-index:1;
+    background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.3);
+    border-radius:8px;padding:12px 14px;font-size:13.5px;color:#c9f7dc;
+  }
+  .premium-active-block svg{width:20px;height:20px;flex-shrink:0;}
+
+  /* ---- COLOR WHEEL ---- */
+  .settings-row-wheel{align-items:flex-start;}
+  .color-wheel-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap;}
+  .color-wheel{
+    position:relative;width:160px;height:160px;border-radius:50%;flex-shrink:0;
+    background:conic-gradient(from 90deg,
+      #ff0000,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000);
+    box-shadow:0 0 0 3px #0a0a0a,0 0 0 4px #444;
+    touch-action:none;cursor:crosshair;
+  }
+  .color-wheel::after{
+    content:'';position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at center, #808080 0%, rgba(128,128,128,0) 75%);
+    pointer-events:none;
+  }
+  .color-wheel-handle{
+    position:absolute;width:22px;height:22px;border-radius:50%;
+    border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.5);
+    transform:translate(-50%,-50%);left:50%;top:50%;pointer-events:none;
+  }
+  .color-wheel-info{flex:1;min-width:180px;}
+  .color-wheel-hex{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:6px;font-family:monospace;}
+  .color-wheel-desc{font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5;}
+
   .settings-btn{
     background:#3a3a3a;color:#fff;border:1px solid #666;padding:8px 16px;
     border-radius:4px;font-size:13.5px;font-weight:600;
@@ -397,6 +473,8 @@
   .switch input:checked + .slider-toggle::before{transform:translateX(20px);}
   .danger-btn{background:transparent;border:1px solid #a33;color:#f77;padding:8px 16px;border-radius:4px;font-size:13.5px;font-weight:600;}
   .danger-btn:hover{background:#a33;color:#fff;}
+  .danger-btn-delete{border-color:#661111;color:#ff8a8a;}
+  .danger-btn-delete:hover{background:#661111;color:#fff;}
   .profiles-manage-list{display:flex;flex-wrap:wrap;gap:16px;}
   .pm-tile{display:flex;flex-direction:column;align-items:center;gap:6px;width:90px;}
   .pm-tile img{width:70px;height:70px;border-radius:6px;object-fit:cover;background:#333;}
@@ -492,6 +570,7 @@
     .discover-more-section{padding:16px 16px 8px;}
     .episode-select-row{padding:12px 16px;}
     .settings-row{flex-wrap:wrap;}
+    .upsell-banner{margin:0 16px 20px;}
   }
   @media (max-width:520px){
     .card-item{width:130px;}
@@ -502,7 +581,12 @@
     .search-wrap.open input{width:110px;}
     .episode-select-group{flex:1 1 45%;}
     .episode-select-group select{width:100%;}
-    .theme-swatch{width:36px;height:36px;}
+    .color-wheel-wrap{flex-direction:column;align-items:flex-start;}
+    .color-wheel{width:140px;height:140px;}
+    .premium-panel{padding:18px;}
+    .premium-panel-title{font-size:18px;}
+    .premium-redeem-row{padding:6px;}
+    .premium-redeem-btn{width:100%;}
   }
 </style>
 </head>
@@ -675,8 +759,58 @@
     <div class="settings-row">
       <span class="s-label">Membership</span>
       <div class="s-info">
-        <div class="s-name">VIXFLIX Free Plan <span class="free-badge">Free</span></div>
+        <div class="s-name" id="settings-membership-name">VIXFLIX Free Plan <span class="free-badge" id="settings-membership-badge">Free</span></div>
         <div class="s-email" id="settings-email"></div>
+      </div>
+    </div>
+
+    <!-- PREMIUM PANEL -->
+    <div class="premium-panel" id="premium-panel">
+      <div class="premium-panel-glow"></div>
+      <div class="premium-panel-head">
+        <svg class="premium-crown-svg" viewBox="0 0 24 24" fill="url(#crownGrad)">
+          <defs>
+            <linearGradient id="crownGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#FF8C00"/>
+            </linearGradient>
+          </defs>
+          <path d="M3 18h18l1-9-6 4-4-7-4 7-6-4 1 9z"/>
+          <path d="M4 20h16v2H4z"/>
+        </svg>
+        <div>
+          <div class="premium-panel-title" id="premium-panel-title">PREMIUM PLAN</div>
+          <div class="premium-panel-sub" id="premium-panel-sub">Unlock the full catalog — every movie, show &amp; anime title</div>
+        </div>
+      </div>
+
+      <div class="premium-perks" id="premium-perks">
+        <div class="premium-perk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Full movie &amp; TV catalog, unlocked
+        </div>
+        <div class="premium-perk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/></svg>
+          Anime section unlocked
+        </div>
+        <div class="premium-perk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+          All servers &amp; sources unlocked
+        </div>
+      </div>
+
+      <div class="premium-redeem" id="premium-redeem-block">
+        <div class="premium-redeem-row">
+          <svg class="premium-key-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="15" r="4"/><path d="M10.5 11.5L20 2M20 2v5h-5M20 2l-3 3"/></svg>
+          <input type="text" id="premium-code-input" placeholder="CODE:" autocomplete="off" spellcheck="false">
+          <button class="premium-redeem-btn" id="premium-redeem-btn">Unlock</button>
+        </div>
+        <div class="premium-redeem-msg" id="premium-redeem-msg"></div>
+      </div>
+
+      <div class="premium-active-block hidden" id="premium-active-block">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+        <span>Premium is active on this account — enjoy everything!</span>
       </div>
     </div>
 
@@ -695,17 +829,17 @@
       <div class="profiles-manage-list" id="settings-profiles-list"></div>
     </div>
 
-    <div class="settings-row">
+    <div class="settings-row settings-row-wheel">
       <span class="s-label">Theme Color</span>
-      <div class="theme-swatches" id="theme-swatches">
-        <button class="theme-swatch active" data-color="#E50914" data-dark="#B20710" style="background:#E50914" title="Red"></button>
-        <button class="theme-swatch" data-color="#1D9BF0" data-dark="#0F7BC4" style="background:#1D9BF0" title="Blue"></button>
-        <button class="theme-swatch" data-color="#22C55E" data-dark="#16A34A" style="background:#22C55E" title="Green"></button>
-        <button class="theme-swatch" data-color="#A855F7" data-dark="#8B2FE0" style="background:#A855F7" title="Purple"></button>
-        <button class="theme-swatch" data-color="#F97316" data-dark="#DB6810" style="background:#F97316" title="Orange"></button>
-        <button class="theme-swatch" data-color="#EC4899" data-dark="#D63384" style="background:#EC4899" title="Pink"></button>
-        <button class="theme-swatch" data-color="#EAB308" data-dark="#CA8A04" style="background:#EAB308" title="Yellow"></button>
-        <button class="theme-swatch" data-color="#14B8A6" data-dark="#0D9488" style="background:#14B8A6" title="Teal"></button>
+      <div class="color-wheel-wrap">
+        <div class="color-wheel" id="color-wheel">
+          <div class="color-wheel-handle" id="color-wheel-handle"></div>
+        </div>
+        <div class="color-wheel-info">
+          <div class="color-wheel-hex" id="color-wheel-hex">#141414</div>
+          <div class="color-wheel-desc">Drag the dot anywhere in the wheel to pick your theme color. Saved automatically.</div>
+          <button class="settings-btn" id="color-wheel-reset">Reset to Default</button>
+        </div>
       </div>
     </div>
 
@@ -721,10 +855,14 @@
     </div>
 
     <div class="settings-row">
-      <span class="s-label">Sign Out</span>
-      <button class="danger-btn" id="settings-signout">Sign out of all devices</button>
+      <span class="s-label">Account</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="danger-btn" id="settings-signout">Sign out of all devices</button>
+        <button class="danger-btn danger-btn-delete" id="settings-delete-account">Delete Account</button>
+      </div>
     </div>
   </div>
+
 </div>
 
 <!-- ================= MODAL ================= -->
@@ -769,7 +907,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, updateProfile
+  GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, updateProfile, deleteUser
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -948,23 +1086,123 @@ const LS = {
 };
 
 /* ===========================================================
-   THEME COLOR — applies immediately (even before login) and
-   persists across sessions. Swatches live in Settings.
+   THEME COLOR WHEEL — drag the dot anywhere in the wheel to pick
+   any color; it becomes the page background, and text/borders/
+   SVGs auto-adjust for contrast. Search bar & logo stay fixed.
+   Applies immediately (even before login) and persists.
 =========================================================== */
-function applyThemeColor(color, dark, save){
-  document.documentElement.style.setProperty('--red', color);
-  document.documentElement.style.setProperty('--red-dark', dark);
-  document.querySelectorAll('.theme-swatch').forEach(sw=>{
-    sw.classList.toggle('active', sw.dataset.color.toLowerCase() === color.toLowerCase());
-  });
-  if(save) LS.set('vixflix_theme_color', { color, dark });
+function hslToHex(h, s, l){
+  s/=100; l/=100;
+  const k = n => (n + h/30) % 12;
+  const a = s * Math.min(l, 1-l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n), 1)));
+  const toHex = x => Math.round(x*255).toString(16).padStart(2,'0');
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
 }
-(function initThemeColor(){
-  const saved = LS.get('vixflix_theme_color', null);
-  if(saved) applyThemeColor(saved.color, saved.dark, false);
-})();
-document.querySelectorAll('.theme-swatch').forEach(sw=>{
-  sw.addEventListener('click', ()=> applyThemeColor(sw.dataset.color, sw.dataset.dark, true));
+function hexToRgb(hex){
+  const n = parseInt(hex.replace('#',''), 16);
+  return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+}
+function mixHex(hex, amt){
+  const {r,g,b} = hexToRgb(hex);
+  const adj = v => Math.max(0, Math.min(255, Math.round(v + (amt/100)*255)));
+  const toHex = x => x.toString(16).padStart(2,'0');
+  return `#${toHex(adj(r))}${toHex(adj(g))}${toHex(adj(b))}`;
+}
+
+function applyWheelTheme(hue, sat, save){
+  const bg = hslToHex(hue, sat, 50);
+  const { r, g, b } = hexToRgb(bg);
+  const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+  const isDark = lum < 0.55;
+  const text = isDark ? '#F5F5F1' : '#141414';
+  const textDim = isDark ? '#B3B3B3' : '#4D4D4D';
+  const border = isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.16)';
+  const bgElevated = mixHex(bg, isDark ? 7 : -7);
+  const bgCard = mixHex(bg, isDark ? 12 : -12);
+
+  document.documentElement.style.setProperty('--bg', bg);
+  document.documentElement.style.setProperty('--bg-elevated', bgElevated);
+  document.documentElement.style.setProperty('--bg-card', bgCard);
+  document.documentElement.style.setProperty('--text', text);
+  document.documentElement.style.setProperty('--text-dim', textDim);
+  document.documentElement.style.setProperty('--border', border);
+
+  const hexLabel = document.getElementById('color-wheel-hex');
+  if(hexLabel) hexLabel.textContent = bg.toUpperCase();
+  positionWheelHandle(hue, sat);
+
+  if(save) LS.set('vixflix_wheel_theme', { hue, sat });
+}
+
+function positionWheelHandle(hue, sat){
+  const handle = document.getElementById('color-wheel-handle');
+  const wheel = document.getElementById('color-wheel');
+  if(!handle || !wheel) return;
+  const radius = wheel.clientWidth / 2;
+  const dist = (sat/100) * radius;
+  const angleRad = (hue - 90) * Math.PI / 180; // -90 aligns with conic-gradient's "from 90deg"
+  const x = radius + dist * Math.cos(angleRad);
+  const y = radius + dist * Math.sin(angleRad);
+  handle.style.left = x + 'px';
+  handle.style.top = y + 'px';
+}
+
+function initColorWheel(){
+  const wheel = document.getElementById('color-wheel');
+  const resetBtn = document.getElementById('color-wheel-reset');
+  if(!wheel) return;
+
+  const saved = LS.get('vixflix_wheel_theme', null);
+  if(saved){
+    applyWheelTheme(saved.hue, saved.sat, false);
+  } else {
+    requestAnimationFrame(()=> positionWheelHandle(0, 0)); // default: center (default dark bg)
+  }
+
+  function pickFromEvent(e){
+    const rect = wheel.getBoundingClientRect();
+    const radius = rect.width / 2;
+    const cx = rect.left + radius, cy = rect.top + radius;
+    const px = (e.clientX ?? e.touches?.[0]?.clientX) - cx;
+    const py = (e.clientY ?? e.touches?.[0]?.clientY) - cy;
+    let dist = Math.sqrt(px*px + py*py);
+    dist = Math.min(dist, radius);
+    let angle = Math.atan2(py, px) * 180 / Math.PI + 90;
+    if(angle < 0) angle += 360;
+    const sat = (dist / radius) * 100;
+    applyWheelTheme(angle, sat, true);
+  }
+
+  let dragging = false;
+  wheel.addEventListener('pointerdown', e=>{
+    dragging = true;
+    wheel.setPointerCapture(e.pointerId);
+    pickFromEvent(e);
+  });
+  wheel.addEventListener('pointermove', e=>{ if(dragging) pickFromEvent(e); });
+  wheel.addEventListener('pointerup', ()=> dragging = false);
+  wheel.addEventListener('pointercancel', ()=> dragging = false);
+
+  if(resetBtn){
+    resetBtn.addEventListener('click', ()=>{
+      document.documentElement.style.removeProperty('--bg');
+      document.documentElement.style.removeProperty('--bg-elevated');
+      document.documentElement.style.removeProperty('--bg-card');
+      document.documentElement.style.removeProperty('--text');
+      document.documentElement.style.removeProperty('--text-dim');
+      document.documentElement.style.removeProperty('--border');
+      document.getElementById('color-wheel-hex').textContent = '#141414';
+      positionWheelHandle(0, 0);
+      localStorage.removeItem('vixflix_wheel_theme');
+      toast('Theme reset to default');
+    });
+  }
+}
+initColorWheel();
+window.addEventListener('resize', ()=>{
+  const saved = LS.get('vixflix_wheel_theme', null);
+  if(saved) positionWheelHandle(saved.hue, saved.sat);
 });
 
 /* ===========================================================
@@ -1289,6 +1527,22 @@ let editingProfiles = false;
 
 function userKey(uid, suffix){ return `vixflix_${uid}_${suffix}`; }
 
+/* ===========================================================
+   PREMIUM — code-gated. Free accounts see a limited catalog and
+   no Anime tab; entering the correct code unlocks everything.
+=========================================================== */
+const PREMIUM_CODE = 'VXFLX67';
+const FREE_CATALOG_LIMIT = 12;
+function isPremium(){
+  return !!(currentUser && LS.get(userKey(currentUser.uid, 'premium'), false));
+}
+function setPremium(val){
+  if(currentUser) LS.set(userKey(currentUser.uid, 'premium'), val);
+}
+function gateList(arr){
+  return isPremium() ? arr : arr.slice(0, FREE_CATALOG_LIMIT);
+}
+
 function getProfiles(uid){
   return LS.get(userKey(uid,'profiles'), null);
 }
@@ -1610,24 +1864,27 @@ function buildCard(m){
    VIEW SWITCHING (home / tv / movies / mylist / search / settings)
 =========================================================== */
 function switchView(view){
+  if(view === 'anime' && !isPremium()) view = 'settings'; // free users can't reach anime — send to Settings/Premium instead
   document.querySelectorAll('.nav-link').forEach(l=> l.classList.toggle('active', l.dataset.view===view));
   document.getElementById('browse-view').classList.toggle('hidden', !['home','tv','movies','anime','mylist'].includes(view));
   document.getElementById('search-view').classList.add('hidden');
   document.getElementById('settings-view').classList.toggle('hidden', view!=='settings');
-  document.getElementById('genre-filter-row').classList.toggle('hidden', view!=='home');
-  document.getElementById('discover-more-section').classList.toggle('hidden', view!=='home');
+  document.getElementById('genre-filter-row').classList.toggle('hidden', view!=='home' || !isPremium());
+  document.getElementById('discover-more-section').classList.toggle('hidden', view!=='home' || !isPremium());
   document.getElementById('browse-view').classList.toggle('no-hero', view!=='home');
   if(view==='home') resetGenreFilter();
+  updatePremiumNavVisibility();
 
   if(view==='home'){
     document.getElementById('hero').classList.remove('hidden');
-    renderRows(RESOLVED_MOVIES);
+    renderRows(gateList(RESOLVED_MOVIES));
+    renderUpsellBanner();
   } else if(view==='tv'){
     document.getElementById('hero').classList.add('hidden');
-    renderRows(RESOLVED_MOVIES.filter(m=>m.type==='tv'));
+    renderRows(gateList(RESOLVED_MOVIES.filter(m=>m.type==='tv')));
   } else if(view==='movies'){
     document.getElementById('hero').classList.add('hidden');
-    renderRows(RESOLVED_MOVIES.filter(m=>m.type==='movie'));
+    renderRows(gateList(RESOLVED_MOVIES.filter(m=>m.type==='movie')));
   } else if(view==='anime'){
     document.getElementById('hero').classList.add('hidden');
     renderRows(RESOLVED_ANIME);
@@ -1648,6 +1905,7 @@ function switchView(view){
     }
   } else if(view==='settings'){
     renderSettingsProfiles();
+    renderPremiumPanel();
   }
 }
 
@@ -1844,6 +2102,96 @@ window.addEventListener('scroll', ()=>{
 =========================================================== */
 document.getElementById('dd-signout').onclick = ()=> signOut(auth);
 document.getElementById('settings-signout').onclick = ()=> signOut(auth);
+
+/* ===========================================================
+   PREMIUM PANEL + NAV GATING + UPSELL BANNER
+=========================================================== */
+function renderPremiumPanel(){
+  const premium = isPremium();
+  document.getElementById('settings-membership-name').innerHTML = premium
+    ? `VIXFLIX Premium <span class="free-badge" style="background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;">👑 Premium</span>`
+    : `VIXFLIX Free Plan <span class="free-badge" id="settings-membership-badge">Free</span>`;
+  document.getElementById('premium-panel-sub').textContent = premium
+    ? 'You have full access to every movie, show & anime title.'
+    : 'Unlock the full catalog — every movie, show & anime title';
+  document.getElementById('premium-redeem-block').classList.toggle('hidden', premium);
+  document.getElementById('premium-active-block').classList.toggle('hidden', !premium);
+  const msg = document.getElementById('premium-redeem-msg');
+  if(msg){ msg.textContent = ''; msg.className = 'premium-redeem-msg'; }
+}
+
+function updatePremiumNavVisibility(){
+  const show = isPremium();
+  document.querySelectorAll('[data-view="anime"]').forEach(el=> el.classList.toggle('hidden', !show));
+}
+
+function redeemPremiumCode(){
+  const input = document.getElementById('premium-code-input');
+  const msg = document.getElementById('premium-redeem-msg');
+  const code = input.value.trim().toUpperCase();
+  if(!code) return;
+  if(code === PREMIUM_CODE){
+    setPremium(true);
+    input.value = '';
+    renderPremiumPanel();
+    updatePremiumNavVisibility();
+    toast('👑 Premium unlocked! Welcome to the full experience.');
+    const activeLink = document.querySelector('.nav-link.active');
+    switchView(activeLink ? activeLink.dataset.view : 'home');
+  } else {
+    msg.textContent = 'Invalid code. Please check and try again.';
+    msg.className = 'premium-redeem-msg error';
+  }
+}
+document.getElementById('premium-redeem-btn').addEventListener('click', redeemPremiumCode);
+document.getElementById('premium-code-input').addEventListener('keydown', (e)=>{ if(e.key==='Enter') redeemPremiumCode(); });
+
+function renderUpsellBanner(){
+  const wrap = document.getElementById('rows-wrap');
+  const existing = document.getElementById('upsell-banner');
+  if(existing) existing.remove();
+  if(isPremium()) return;
+  const banner = document.createElement('div');
+  banner.id = 'upsell-banner';
+  banner.className = 'upsell-banner';
+  banner.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="url(#upsellCrownGrad)">
+      <defs><linearGradient id="upsellCrownGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#FF8C00"/></linearGradient></defs>
+      <path d="M3 18h18l1-9-6 4-4-7-4 7-6-4 1 9z"/><path d="M4 20h16v2H4z"/>
+    </svg>
+    <div class="upsell-text"><strong>You're on the Free Plan</strong> — unlock the full catalog + Anime with a Premium code.</div>
+    <button class="upsell-btn" id="upsell-go-btn">Go Premium</button>
+  `;
+  wrap.prepend(banner);
+  document.getElementById('upsell-go-btn').onclick = ()=> switchView('settings');
+}
+
+/* ===========================================================
+   DELETE ACCOUNT
+=========================================================== */
+function clearLocalDataForUser(uid){
+  const prefix = `vixflix_${uid}_`;
+  Object.keys(localStorage).forEach(key=>{
+    if(key.startsWith(prefix)) localStorage.removeItem(key);
+  });
+}
+document.getElementById('settings-delete-account').addEventListener('click', async ()=>{
+  if(!currentUser) return;
+  const sure = confirm('This will permanently delete your VIXFLIX account and all local data (profiles, My List, settings, Premium status). This cannot be undone. Continue?');
+  if(!sure) return;
+  const uid = currentUser.uid;
+  try{
+    await deleteUser(currentUser);
+    clearLocalDataForUser(uid);
+    toast('Account deleted.');
+  }catch(err){
+    if(err.code === 'auth/requires-recent-login'){
+      toast('For security, please sign out and back in, then try deleting again.');
+    } else {
+      toast('Could not delete account: ' + (err.message || err.code));
+    }
+  }
+});
 
 /* ===========================================================
    SETTINGS: change pfp, manage profiles, autoplay toggle
