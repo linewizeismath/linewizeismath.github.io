@@ -431,29 +431,44 @@
   }
   .premium-active-block svg{width:20px;height:20px;flex-shrink:0;}
 
-  /* ---- COLOR WHEEL ---- */
-  .settings-row-wheel{align-items:flex-start;}
-  .color-wheel-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap;}
-  .color-wheel{
-    position:relative;width:160px;height:160px;border-radius:50%;flex-shrink:0;
-    background:conic-gradient(from 90deg,
-      #ff0000,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000);
-    box-shadow:0 0 0 3px #0a0a0a,0 0 0 4px #444;
-    touch-action:none;cursor:crosshair;
+  /* ---- OWNER PANEL ---- */
+  .owner-panel{
+    margin:0 0 20px;padding:20px 22px;background:#141414;
+    border:1px solid rgba(255,215,0,.35);border-radius:12px;
   }
-  .color-wheel::after{
-    content:'';position:absolute;inset:0;border-radius:50%;
-    background:radial-gradient(circle at center, #808080 0%, rgba(128,128,128,0) 75%);
-    pointer-events:none;
+  .owner-panel-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .owner-panel-head svg{width:28px;height:28px;flex-shrink:0;}
+  .owner-panel-title{font-weight:800;font-size:15px;color:#FFD700;letter-spacing:.5px;}
+  .owner-panel-sub{font-size:12px;color:var(--text-dim);margin-top:1px;}
+  .owner-generate-btn{
+    display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#FFD700,#FF8C00);
+    color:#000;border:none;padding:11px 20px;border-radius:6px;font-size:13.5px;font-weight:800;
+    cursor:pointer;text-transform:uppercase;letter-spacing:.5px;
   }
-  .color-wheel-handle{
-    position:absolute;width:22px;height:22px;border-radius:50%;
-    border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.5);
-    transform:translate(-50%,-50%);left:50%;top:50%;pointer-events:none;
+  .owner-generate-btn svg{width:16px;height:16px;}
+  .owner-generate-btn:hover{filter:brightness(1.1);}
+  .owner-generate-btn:disabled{opacity:.6;cursor:default;}
+  .owner-generated-code{
+    margin-top:14px;padding:14px 16px;background:#0f0f0f;border:1px dashed #FFD700;
+    border-radius:8px;font-family:monospace;font-size:17px;font-weight:800;letter-spacing:2px;
+    color:#FFD700;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
   }
-  .color-wheel-info{flex:1;min-width:180px;}
-  .color-wheel-hex{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:6px;font-family:monospace;}
-  .color-wheel-desc{font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5;}
+  .owner-generated-code .copy-code-btn{
+    background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);color:#FFD700;
+    padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.5px;font-family:'Inter',sans-serif;
+  }
+  .owner-codes-list-wrap{margin-top:18px;}
+  .owner-codes-list-title{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px;}
+  .owner-codes-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;}
+  .owner-code-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:#1c1c1c;border:1px solid #333;border-radius:6px;padding:8px 12px;
+    font-family:monospace;font-size:12.5px;flex-wrap:wrap;
+  }
+  .owner-code-status{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;font-family:'Inter',sans-serif;}
+  .owner-code-status.unused{background:rgba(46,204,113,.15);color:#2ecc71;}
+  .owner-code-status.used{background:rgba(255,255,255,.08);color:#888;}
 
   .settings-btn{
     background:#3a3a3a;color:#fff;border:1px solid #666;padding:8px 16px;
@@ -502,6 +517,21 @@
   }
   .modal-close:hover{background:rgba(0,0,0,.85);}
   .modal-close svg{width:18px;height:18px;}
+
+  .small-modal-box{
+    background:var(--bg-elevated);width:100%;max-width:380px;border-radius:8px;
+    position:relative;padding:32px 28px 28px;
+  }
+  .small-modal-box h2{margin:0 0 8px;font-size:22px;}
+  .small-modal-sub{color:var(--text-dim);font-size:13px;margin:0 0 18px;line-height:1.5;}
+  #add-profile-name-input{
+    width:100%;background:#333;border:1px solid #555;border-radius:4px;
+    padding:12px 14px;color:#fff;font-size:15px;outline:none;margin-bottom:18px;
+  }
+  #add-profile-name-input:focus{border-color:#fff;background:#454545;}
+  .small-modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+  .small-modal-create-btn{width:auto;flex:1;min-width:140px;margin:0;padding:11px 20px;}
+
   .player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;}
   .player-wrap iframe, .player-wrap video{width:100%;height:100%;border:none;display:block;}
   .player-placeholder{
@@ -582,12 +612,13 @@
     .search-wrap.open input{width:110px;}
     .episode-select-group{flex:1 1 45%;}
     .episode-select-group select{width:100%;}
-    .color-wheel-wrap{flex-direction:column;align-items:flex-start;}
-    .color-wheel{width:140px;height:140px;}
     .premium-panel{padding:18px;}
     .premium-panel-title{font-size:18px;}
     .premium-redeem-row{padding:6px;}
     .premium-redeem-btn{width:100%;}
+    .owner-panel{padding:16px;}
+    .owner-generate-btn{width:100%;justify-content:center;}
+    .owner-generated-code{font-size:14px;letter-spacing:1px;word-break:break-all;}
   }
 </style>
 </head>
@@ -815,6 +846,26 @@
       </div>
     </div>
 
+    <!-- OWNER PANEL — only visible when logged in as the owner account -->
+    <div class="owner-panel hidden" id="owner-panel">
+      <div class="owner-panel-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4l-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
+        <div>
+          <div class="owner-panel-title">Owner Panel</div>
+          <div class="owner-panel-sub">Generate Premium codes to give out to members</div>
+        </div>
+      </div>
+      <button class="owner-generate-btn" id="owner-generate-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Generate New Code
+      </button>
+      <div class="owner-generated-code hidden" id="owner-generated-code"></div>
+      <div class="owner-codes-list-wrap">
+        <div class="owner-codes-list-title">Your generated codes</div>
+        <div class="owner-codes-list" id="owner-codes-list"><p class="row-empty-note">No codes generated yet.</p></div>
+      </div>
+    </div>
+
     <div class="settings-row">
       <span class="s-label">Profile</span>
       <img class="s-avatar" id="settings-avatar" src="" alt="">
@@ -830,20 +881,6 @@
       <div class="profiles-manage-list" id="settings-profiles-list"></div>
     </div>
 
-    <div class="settings-row settings-row-wheel">
-      <span class="s-label">Theme Color</span>
-      <div class="color-wheel-wrap">
-        <div class="color-wheel" id="color-wheel">
-          <div class="color-wheel-handle" id="color-wheel-handle"></div>
-        </div>
-        <div class="color-wheel-info">
-          <div class="color-wheel-hex" id="color-wheel-hex">#141414</div>
-          <div class="color-wheel-desc">Drag the dot anywhere in the wheel to pick your theme color. Saved automatically.</div>
-          <button class="settings-btn" id="color-wheel-reset">Reset to Default</button>
-        </div>
-      </div>
-    </div>
-
     <div class="settings-row">
       <span class="s-label">Playback</span>
       <div class="settings-toggle">
@@ -857,12 +894,18 @@
 
     <div class="settings-row">
       <span class="s-label">Content</span>
-      <div class="settings-toggle">
-        <label class="switch">
-          <input type="checkbox" id="adult-content-toggle">
-          <span class="slider-toggle"></span>
-        </label>
-        <span>Show 18+ content in browsing &amp; search (off by default)</span>
+      <div class="settings-toggle" style="flex-direction:column;align-items:flex-start;gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <label class="switch">
+            <input type="checkbox" id="adult-content-toggle">
+            <span class="slider-toggle"></span>
+          </label>
+          <span>Show 18+ content in browsing &amp; search (off by default)</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-dim);margin:0;line-height:1.5;">
+          When off, VIXFLIX also hides Horror, Thriller, Crime &amp; War suggestions across Movies, TV, and Anime.
+          This only controls which titles are <em>suggested</em> — VIXFLIX can't edit or censor scenes inside a video, since playback comes from third-party embed sites we don't control.
+        </p>
       </div>
     </div>
 
@@ -915,12 +958,31 @@
 
 <div id="toast"></div>
 
+<!-- ADD PROFILE MODAL (replaces browser prompt()) -->
+<div class="modal-backdrop hidden" id="add-profile-modal">
+  <div class="small-modal-box">
+    <button class="modal-close" id="add-profile-close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2>Add Profile</h2>
+    <p class="small-modal-sub">Give this profile a name. You can add an avatar later from Settings.</p>
+    <input type="text" id="add-profile-name-input" placeholder="Profile name" maxlength="20" autocomplete="off">
+    <div class="small-modal-actions">
+      <button class="settings-btn" id="add-profile-cancel-btn">Cancel</button>
+      <button class="auth-submit small-modal-create-btn" id="add-profile-create-btn">Create Profile</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, updateProfile, deleteUser
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD73WiE4888l4-7uySUkXYBjWTy1WUrUTA",
@@ -932,6 +994,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 /* ===========================================================
@@ -1097,125 +1160,11 @@ const LS = {
   set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 };
 
-/* ===========================================================
-   THEME COLOR WHEEL — drag the dot anywhere in the wheel to pick
-   any color; it becomes the page background, and text/borders/
-   SVGs auto-adjust for contrast. Search bar & logo stay fixed.
-   Applies immediately (even before login) and persists.
-=========================================================== */
-function hslToHex(h, s, l){
-  s/=100; l/=100;
-  const k = n => (n + h/30) % 12;
-  const a = s * Math.min(l, 1-l);
-  const f = n => l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n), 1)));
-  const toHex = x => Math.round(x*255).toString(16).padStart(2,'0');
-  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-}
-function hexToRgb(hex){
-  const n = parseInt(hex.replace('#',''), 16);
-  return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
-}
-function mixHex(hex, amt){
-  const {r,g,b} = hexToRgb(hex);
-  const adj = v => Math.max(0, Math.min(255, Math.round(v + (amt/100)*255)));
-  const toHex = x => x.toString(16).padStart(2,'0');
-  return `#${toHex(adj(r))}${toHex(adj(g))}${toHex(adj(b))}`;
-}
-
-function applyWheelTheme(hue, sat, save){
-  const bg = hslToHex(hue, sat, 50);
-  const { r, g, b } = hexToRgb(bg);
-  const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
-  const isDark = lum < 0.55;
-  const text = isDark ? '#F5F5F1' : '#141414';
-  const textDim = isDark ? '#B3B3B3' : '#4D4D4D';
-  const border = isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.16)';
-  const bgElevated = mixHex(bg, isDark ? 7 : -7);
-  const bgCard = mixHex(bg, isDark ? 12 : -12);
-
-  document.documentElement.style.setProperty('--bg', bg);
-  document.documentElement.style.setProperty('--bg-elevated', bgElevated);
-  document.documentElement.style.setProperty('--bg-card', bgCard);
-  document.documentElement.style.setProperty('--text', text);
-  document.documentElement.style.setProperty('--text-dim', textDim);
-  document.documentElement.style.setProperty('--border', border);
-
-  const hexLabel = document.getElementById('color-wheel-hex');
-  if(hexLabel) hexLabel.textContent = bg.toUpperCase();
-  positionWheelHandle(hue, sat);
-
-  if(save) LS.set('vixflix_wheel_theme', { hue, sat });
-}
-
-function positionWheelHandle(hue, sat){
-  const handle = document.getElementById('color-wheel-handle');
-  const wheel = document.getElementById('color-wheel');
-  if(!handle || !wheel) return;
-  const radius = wheel.clientWidth / 2;
-  const dist = (sat/100) * radius;
-  const angleRad = (hue - 90) * Math.PI / 180; // -90 aligns with conic-gradient's "from 90deg"
-  const x = radius + dist * Math.cos(angleRad);
-  const y = radius + dist * Math.sin(angleRad);
-  handle.style.left = x + 'px';
-  handle.style.top = y + 'px';
-}
-
-function initColorWheel(){
-  const wheel = document.getElementById('color-wheel');
-  const resetBtn = document.getElementById('color-wheel-reset');
-  if(!wheel) return;
-
-  const saved = LS.get('vixflix_wheel_theme', null);
-  if(saved){
-    applyWheelTheme(saved.hue, saved.sat, false);
-  } else {
-    requestAnimationFrame(()=> positionWheelHandle(0, 0)); // default: center (default dark bg)
-  }
-
-  function pickFromEvent(e){
-    const rect = wheel.getBoundingClientRect();
-    const radius = rect.width / 2;
-    const cx = rect.left + radius, cy = rect.top + radius;
-    const px = (e.clientX ?? e.touches?.[0]?.clientX) - cx;
-    const py = (e.clientY ?? e.touches?.[0]?.clientY) - cy;
-    let dist = Math.sqrt(px*px + py*py);
-    dist = Math.min(dist, radius);
-    let angle = Math.atan2(py, px) * 180 / Math.PI + 90;
-    if(angle < 0) angle += 360;
-    const sat = (dist / radius) * 100;
-    applyWheelTheme(angle, sat, true);
-  }
-
-  let dragging = false;
-  wheel.addEventListener('pointerdown', e=>{
-    dragging = true;
-    wheel.setPointerCapture(e.pointerId);
-    pickFromEvent(e);
-  });
-  wheel.addEventListener('pointermove', e=>{ if(dragging) pickFromEvent(e); });
-  wheel.addEventListener('pointerup', ()=> dragging = false);
-  wheel.addEventListener('pointercancel', ()=> dragging = false);
-
-  if(resetBtn){
-    resetBtn.addEventListener('click', ()=>{
-      document.documentElement.style.removeProperty('--bg');
-      document.documentElement.style.removeProperty('--bg-elevated');
-      document.documentElement.style.removeProperty('--bg-card');
-      document.documentElement.style.removeProperty('--text');
-      document.documentElement.style.removeProperty('--text-dim');
-      document.documentElement.style.removeProperty('--border');
-      document.getElementById('color-wheel-hex').textContent = '#141414';
-      positionWheelHandle(0, 0);
-      localStorage.removeItem('vixflix_wheel_theme');
-      toast('Theme reset to default');
-    });
-  }
-}
-initColorWheel();
-window.addEventListener('resize', ()=>{
-  const saved = LS.get('vixflix_wheel_theme', null);
-  if(saved) positionWheelHandle(saved.hue, saved.sat);
-});
+/* No theming system — VIXFLIX uses a fixed dark theme. Clear any
+   leftover theme data from earlier versions so returning users
+   see the normal default look. */
+localStorage.removeItem('vixflix_wheel_theme');
+localStorage.removeItem('vixflix_theme_color');
 
 /* ===========================================================
    TMDB LOOKUP — resolves each MOVIES entry to a real poster,
@@ -1351,6 +1300,19 @@ function mapTMDBItem(raw, type, category){
   };
 }
 
+/* ===========================================================
+   CONTENT FILTER — when 18+ content is off (the default), also
+   hide Horror / Thriller / Crime / War titles so suggestions stay
+   appropriate. This filters which titles are shown; it can't edit
+   or censor scenes inside a video (see note in Settings).
+=========================================================== */
+const RESTRICTED_GENRE_IDS = [27, 53, 80, 10752]; // Horror, Thriller, Crime, War
+function passesContentFilter(rawTmdbItem){
+  if(adultContentEnabled()) return true;
+  const ids = rawTmdbItem.genre_ids || [];
+  return !ids.some(id => RESTRICTED_GENRE_IDS.includes(id));
+}
+
 let DISCOVERED_MOVIES = [];
 let discoverLoaded = false;
 
@@ -1371,6 +1333,7 @@ async function loadDiscoverCatalog(){
         const raw = await tmdbFetchPage(cat.path, p);
         raw.forEach(item=>{
           if(!item.poster_path) return; // skip titles with no artwork
+          if(!passesContentFilter(item)) return;
           const mapped = mapTMDBItem(item, cat.type, cat.label);
           if(cat.badge) mapped.badge = cat.badge;
           results.push(mapped);
@@ -1445,9 +1408,12 @@ query ($page:Int, $perPage:Int, $sort:[MediaSort], $genre:[String]){
       coverImage { large }
       bannerImage
       seasonYear
+      genres
     }
   }
 }`;
+
+const ANIME_RESTRICTED_GENRES = ['Horror', 'Thriller'];
 
 async function fetchAnilistCollection(collection){
   try{
@@ -1461,16 +1427,19 @@ async function fetchAnilistCollection(collection){
     });
     const json = await res.json();
     const list = (json.data && json.data.Page && json.data.Page.media) || [];
-    return list.filter(m=>m.coverImage && m.coverImage.large).map(m=>({
-      id: `anime-${m.id}`,
-      type:'tv', category: collection.label, season:1, episode:1,
-      title: m.title.english || m.title.romaji,
-      cover: m.coverImage.large,
-      backdrop: m.bannerImage || null,
-      desc: (m.description || '').replace(/<[^>]+>/g, ''),
-      year: m.seasonYear ? String(m.seasonYear) : '',
-      tmdbId: undefined, imdbId: undefined, // resolved lazily when opened
-    }));
+    return list
+      .filter(m=> m.coverImage && m.coverImage.large)
+      .filter(m=> adultContentEnabled() || !(m.genres||[]).some(g=> ANIME_RESTRICTED_GENRES.includes(g)))
+      .map(m=>({
+        id: `anime-${m.id}`,
+        type:'tv', category: collection.label, season:1, episode:1,
+        title: m.title.english || m.title.romaji,
+        cover: m.coverImage.large,
+        backdrop: m.bannerImage || null,
+        desc: (m.description || '').replace(/<[^>]+>/g, ''),
+        year: m.seasonYear ? String(m.seasonYear) : '',
+        tmdbId: undefined, imdbId: undefined, // resolved lazily when opened
+      }));
   }catch(e){
     console.warn('AniList collection fetch failed:', collection.label, e);
     return [];
@@ -1489,7 +1458,7 @@ async function fetchTMDBAnimeCategory(cat){
   try{
     const res = await fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_keywords=210024&sort_by=${cat.sortBy}${adultParam()}`);
     const data = await res.json();
-    return (data.results||[]).filter(r=>r.poster_path).slice(0,20).map(r=>mapTMDBItem(r,'tv',cat.label));
+    return (data.results||[]).filter(r=>r.poster_path && passesContentFilter(r)).slice(0,20).map(r=>mapTMDBItem(r,'tv',cat.label));
   }catch(e){
     console.warn('TMDB anime fallback failed:', cat.label, e);
     return [];
@@ -1540,11 +1509,15 @@ let editingProfiles = false;
 function userKey(uid, suffix){ return `vixflix_${uid}_${suffix}`; }
 
 /* ===========================================================
-   PREMIUM — code-gated. Free accounts see a limited catalog and
-   no Anime tab; entering the correct code unlocks everything.
+   PREMIUM — code-gated via Firestore. Free accounts see a limited
+   catalog and no Anime tab; a valid code unlocks everything.
+   Only the owner account can generate codes (see Owner Panel).
 =========================================================== */
-const PREMIUM_CODE = 'VXFLX67';
+const OWNER_EMAIL = 'baktashanwari234@gmail.com';
 const FREE_CATALOG_LIMIT = 12;
+function isOwner(){
+  return !!(currentUser && currentUser.email === OWNER_EMAIL);
+}
 function isPremium(){
   return !!(currentUser && LS.get(userKey(currentUser.uid, 'premium'), false));
 }
@@ -1590,6 +1563,33 @@ function toast(msg){
   clearTimeout(t._timer);
   t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
 }
+
+/* ===========================================================
+   ADD PROFILE MODAL — in-page dialog, replaces browser prompt()
+=========================================================== */
+const addProfileModal = document.getElementById('add-profile-modal');
+const addProfileInput = document.getElementById('add-profile-name-input');
+
+function openAddProfileModal(onCreate){
+  addProfileInput.value = '';
+  addProfileModal.classList.remove('hidden');
+  setTimeout(()=> addProfileInput.focus(), 50);
+
+  function submit(){
+    const name = addProfileInput.value.trim();
+    if(!name){ addProfileInput.focus(); return; }
+    closeAddProfileModal();
+    onCreate(name.slice(0,20));
+  }
+  document.getElementById('add-profile-create-btn').onclick = submit;
+  addProfileInput.onkeydown = (e)=>{ if(e.key === 'Enter') submit(); };
+}
+function closeAddProfileModal(){
+  addProfileModal.classList.add('hidden');
+}
+document.getElementById('add-profile-close').onclick = closeAddProfileModal;
+document.getElementById('add-profile-cancel-btn').onclick = closeAddProfileModal;
+addProfileModal.addEventListener('click', (e)=>{ if(e.target===addProfileModal) closeAddProfileModal(); });
 
 /* ===========================================================
    SCREEN SWITCHING
@@ -1745,12 +1745,12 @@ function renderProfilesScreen(profiles){
     addTile.className = 'profile-tile add-profile';
     addTile.innerHTML = `<div class="profile-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg></div><span>Add Profile</span>`;
     addTile.onclick = ()=>{
-      const name = prompt('New profile name:');
-      if(!name) return;
-      const profiles2 = getProfiles(currentUser.uid);
-      profiles2.push({ id:'p'+Date.now(), name: name.slice(0,20), avatar:null });
-      saveProfiles(currentUser.uid, profiles2);
-      renderProfilesScreen(profiles2);
+      openAddProfileModal((name)=>{
+        const profiles2 = getProfiles(currentUser.uid);
+        profiles2.push({ id:'p'+Date.now(), name, avatar:null });
+        saveProfiles(currentUser.uid, profiles2);
+        renderProfilesScreen(profiles2);
+      });
     };
     row.appendChild(addTile);
   }
@@ -1896,7 +1896,7 @@ function switchView(view){
   document.getElementById('genre-filter-row').classList.toggle('hidden', view!=='home' || !isPremium());
   document.getElementById('discover-more-section').classList.toggle('hidden', view!=='home' || !isPremium());
   document.getElementById('browse-view').classList.toggle('no-hero', view!=='home');
-  if(view==='home') resetGenreFilter();
+  if(view==='home'){ resetGenreFilter(); updateGenrePillVisibility(); }
   updatePremiumNavVisibility();
 
   if(view==='home'){
@@ -1940,6 +1940,13 @@ function switchView(view){
 function resetGenreFilter(){
   document.querySelectorAll('.genre-pill').forEach(p=> p.classList.toggle('active', p.dataset.genre===''));
 }
+function updateGenrePillVisibility(){
+  const allowed = adultContentEnabled();
+  document.querySelectorAll('.genre-pill').forEach(p=>{
+    const g = parseInt(p.dataset.genre, 10);
+    if(RESTRICTED_GENRE_IDS.includes(g)) p.classList.toggle('hidden', !allowed);
+  });
+}
 document.querySelectorAll('.genre-pill').forEach(pill=>{
   pill.addEventListener('click', async ()=>{
     document.querySelectorAll('.genre-pill').forEach(p=> p.classList.remove('active'));
@@ -1958,8 +1965,8 @@ document.querySelectorAll('.genre-pill').forEach(pill=>{
         fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}`).then(r=>r.json())
       ]);
       const items = [
-        ...(movies.results||[]).filter(i=>i.poster_path).map(i=>mapTMDBItem(i,'movie',pill.textContent.trim())),
-        ...(tv.results||[]).filter(i=>i.poster_path).map(i=>mapTMDBItem(i,'tv',pill.textContent.trim()))
+        ...(movies.results||[]).filter(i=>i.poster_path && passesContentFilter(i)).map(i=>mapTMDBItem(i,'movie',pill.textContent.trim())),
+        ...(tv.results||[]).filter(i=>i.poster_path && passesContentFilter(i)).map(i=>mapTMDBItem(i,'tv',pill.textContent.trim()))
       ].sort(()=>Math.random()-0.5).slice(0,30);
       wrap.innerHTML = '';
       const row = document.createElement('div');
@@ -2000,7 +2007,7 @@ async function loadDiscoverMore(){
     }));
     results.forEach(({type, results})=>{
       results.forEach(raw=>{
-        if(!raw.poster_path) return;
+        if(!raw.poster_path || !passesContentFilter(raw)) return;
         const key = `${type}-${raw.id}`;
         if(discoverMoreSeen.has(key) || discoverMoreLoaded >= DISCOVER_MORE_CAP) return;
         discoverMoreSeen.add(key);
@@ -2069,7 +2076,7 @@ async function runSearch(query){
       const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}${adultParam()}`);
       const data = await res.json();
       liveResults = (data.results || [])
-        .filter(r => (r.media_type === 'movie' || r.media_type === 'tv') && r.poster_path)
+        .filter(r => (r.media_type === 'movie' || r.media_type === 'tv') && r.poster_path && passesContentFilter(r))
         .map(r => mapTMDBItem(r, r.media_type, r.media_type === 'tv' ? 'TV Shows' : 'Movies'));
     }catch(e){ console.warn('Live TMDB search failed', e); }
   }
@@ -2142,6 +2149,7 @@ function renderPremiumPanel(){
   document.getElementById('premium-active-block').classList.toggle('hidden', !premium);
   const msg = document.getElementById('premium-redeem-msg');
   if(msg){ msg.textContent = ''; msg.className = 'premium-redeem-msg'; }
+  renderOwnerPanel();
 }
 
 function updatePremiumNavVisibility(){
@@ -2149,26 +2157,126 @@ function updatePremiumNavVisibility(){
   document.querySelectorAll('[data-view="anime"]').forEach(el=> el.classList.toggle('hidden', !show));
 }
 
-function redeemPremiumCode(){
+async function redeemPremiumCode(){
   const input = document.getElementById('premium-code-input');
+  const btn = document.getElementById('premium-redeem-btn');
   const msg = document.getElementById('premium-redeem-msg');
   const code = input.value.trim().toUpperCase();
   if(!code) return;
-  if(code === PREMIUM_CODE){
+  btn.disabled = true;
+  msg.textContent = 'Checking code...';
+  msg.className = 'premium-redeem-msg';
+  try{
+    const ref = doc(db, 'premiumCodes', code);
+    const snap = await getDoc(ref);
+    if(!snap.exists()){
+      msg.textContent = 'Invalid code. Please check and try again.';
+      msg.className = 'premium-redeem-msg error';
+      return;
+    }
+    const data = snap.data();
+    if(data.used){
+      msg.textContent = 'This code has already been used.';
+      msg.className = 'premium-redeem-msg error';
+      return;
+    }
+    await updateDoc(ref, { used: true, usedBy: currentUser.uid, usedByEmail: currentUser.email, usedAt: serverTimestamp() });
     setPremium(true);
     input.value = '';
+    msg.textContent = '';
     renderPremiumPanel();
     updatePremiumNavVisibility();
     toast('👑 Premium unlocked! Welcome to the full experience.');
     const activeLink = document.querySelector('.nav-link.active');
     switchView(activeLink ? activeLink.dataset.view : 'home');
-  } else {
-    msg.textContent = 'Invalid code. Please check and try again.';
+  }catch(e){
+    console.warn('Redeem failed', e);
+    msg.textContent = 'Could not verify that code right now. Try again in a moment.';
     msg.className = 'premium-redeem-msg error';
+  }finally{
+    btn.disabled = false;
   }
 }
 document.getElementById('premium-redeem-btn').addEventListener('click', redeemPremiumCode);
 document.getElementById('premium-code-input').addEventListener('keydown', (e)=>{ if(e.key==='Enter') redeemPremiumCode(); });
+
+/* ===========================================================
+   OWNER PANEL — only the OWNER_EMAIL account can generate codes.
+   Real security comes from the Firestore rules (only that email
+   can write new premiumCodes documents), not from hiding this UI.
+=========================================================== */
+function generateRandomCode(length){
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const rand = new Uint32Array(length);
+  crypto.getRandomValues(rand);
+  let out = '';
+  for(let i=0; i<length; i++) out += chars[rand[i] % chars.length];
+  return out;
+}
+
+function renderOwnerPanel(){
+  const panel = document.getElementById('owner-panel');
+  if(!isOwner()){ panel.classList.add('hidden'); return; }
+  panel.classList.remove('hidden');
+  loadOwnerCodesList();
+}
+
+async function loadOwnerCodesList(){
+  const list = document.getElementById('owner-codes-list');
+  list.innerHTML = '<p class="row-empty-note">Loading...</p>';
+  try{
+    const q = query(collection(db, 'premiumCodes'), where('createdBy', '==', currentUser.uid));
+    const snap = await getDocs(q);
+    if(snap.empty){
+      list.innerHTML = '<p class="row-empty-note">No codes generated yet.</p>';
+      return;
+    }
+    const rows = [];
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      rows.push({ code: docSnap.id, used: !!d.used });
+    });
+    list.innerHTML = rows.map(r => `
+      <div class="owner-code-row">
+        <span>${escapeHtml(r.code)}</span>
+        <span class="owner-code-status ${r.used ? 'used' : 'unused'}">${r.used ? 'Used' : 'Unused'}</span>
+      </div>
+    `).join('');
+  }catch(e){
+    console.warn('Failed to load owner codes list', e);
+    list.innerHTML = `<p class="row-empty-note">Couldn't load your codes — make sure Firestore rules allow the owner account to list premiumCodes.</p>`;
+  }
+}
+
+document.getElementById('owner-generate-btn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('owner-generate-btn');
+  const display = document.getElementById('owner-generated-code');
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  try{
+    const code = generateRandomCode(20);
+    await setDoc(doc(db, 'premiumCodes', code), {
+      used: false,
+      createdBy: currentUser.uid,
+      createdByEmail: currentUser.email,
+      createdAt: serverTimestamp()
+    });
+    display.innerHTML = `<span>${escapeHtml(code)}</span><button class="copy-code-btn" id="copy-owner-code-btn">Copy</button>`;
+    display.classList.remove('hidden');
+    document.getElementById('copy-owner-code-btn').onclick = ()=>{
+      navigator.clipboard.writeText(code).then(()=> toast('Code copied to clipboard'));
+    };
+    toast('New premium code generated!');
+    loadOwnerCodesList();
+  }catch(e){
+    console.warn('Code generation failed', e);
+    toast('Could not generate code — check Firestore is enabled and your rules are published.');
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
+});
 
 function renderUpsellBanner(){
   const wrap = document.getElementById('rows-wrap');
@@ -2242,11 +2350,14 @@ document.getElementById('autoplay-toggle').addEventListener('change', (e)=>{
 document.getElementById('adult-content-toggle').addEventListener('change', (e)=>{
   LS.set(userKey(currentUser.uid,'adultContent'), e.target.checked);
   toast(e.target.checked ? '18+ content enabled' : '18+ content disabled');
-  // clear cached catalog so the new filter takes effect right away instead of waiting on the 24h cache
+  // clear cached catalog + anime data so the new filter takes effect right away instead of waiting on the cache
   localStorage.removeItem('vixflix_discover_catalog_v1');
+  localStorage.removeItem('vixflix_anilist_catalog_v3');
   DISCOVERED_MOVIES = [];
   discoverLoaded = false;
-  loadDiscoverCatalog().then(()=>{
+  animeDataLoaded = false;
+  updateGenrePillVisibility();
+  Promise.all([loadDiscoverCatalog(), loadAnimeData()]).then(()=>{
     renderHero();
     const activeLink = document.querySelector('.nav-link.active');
     switchView(activeLink ? activeLink.dataset.view : 'home');
@@ -2269,12 +2380,12 @@ function renderSettingsProfiles(){
     add.className = 'pm-tile';
     add.innerHTML = `<div class="pm-add">+</div><span>Add</span>`;
     add.onclick = ()=>{
-      const name = prompt('New profile name:');
-      if(!name) return;
-      const profiles2 = getProfiles(currentUser.uid);
-      profiles2.push({ id:'p'+Date.now(), name: name.slice(0,20), avatar:null });
-      saveProfiles(currentUser.uid, profiles2);
-      renderSettingsProfiles();
+      openAddProfileModal((name)=>{
+        const profiles2 = getProfiles(currentUser.uid);
+        profiles2.push({ id:'p'+Date.now(), name, avatar:null });
+        saveProfiles(currentUser.uid, profiles2);
+        renderSettingsProfiles();
+      });
     };
     list.appendChild(add);
   }
