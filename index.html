@@ -1125,8 +1125,37 @@ const SERVERS = {
   '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
 '3': {
   name: 'Flixy',
-  url: (id, tv, s, e, movie) =>
-    `https://flixy-backend.vercel.app/api/v1/videos/play?tmdbId=${id}&type=${tv ? 'tv' : 'movie'}${tv ? `&season=${s}&episode=${e}` : ''}&title=${encodeURIComponent(movie.title)}`
+
+  url: async (id, tv, s, e, movie) => {
+    const params = new URLSearchParams({
+      tmdbId: id,
+      type: tv ? 'tv' : 'movie'
+    });
+
+    if (tv) {
+      params.set('season', s);
+      params.set('episode', e);
+    }
+
+    try {
+      const response = await fetch(
+        `https://flixy-backend.vercel.app/api/v1/videos/play?${params.toString()}`
+      );
+
+      if (!response.ok) {
+        console.error('Flixy API error:', response.status);
+        return null;
+      }
+
+      const data = await response.json();
+
+      return data?.data?.videoFile || null;
+
+    } catch (error) {
+      console.error('Flixy error:', error);
+      return null;
+    }
+  }
 },
   '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
   '5':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
@@ -2538,16 +2567,39 @@ async function reloadWithNewEpisode(movie){
 
 function playServerAt(index){
   currentServerIndex = index;
+
   const server = currentServerPool[index];
-  playerWrap.innerHTML = `<iframe src="${server.url}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
+
+  if(!server){
+    return;
+  }
+
+  if(server.name === 'Flixy'){
+    playerWrap.innerHTML = `
+      <video
+        src="${escapeHtml(server.url)}"
+        controls
+        autoplay
+        playsinline
+        style="width:100%;height:100%;background:#000;object-fit:contain;"
+      ></video>
+    `;
+  } else {
+    playerWrap.innerHTML = `
+      <iframe
+        src="${escapeHtml(server.url)}"
+        allow="autoplay; encrypted-media; fullscreen"
+        allowfullscreen
+        referrerpolicy="no-referrer">
+      </iframe>
+    `;
+  }
+
   serverSwitchRow.innerHTML = `
-    <span class="current-server">Source: ${escapeHtml(server.name)}</span>
-    <button class="server-switch-btn" id="try-another-source-btn">Not loading? Try another source</button>
+    <span class="current-server">
+      Source: ${escapeHtml(server.name)}
+    </span>
   `;
-  document.getElementById('try-another-source-btn').onclick = ()=>{
-    const next = (currentServerIndex + 1) % currentServerPool.length;
-    playServerAt(next);
-  };
 }
 
 function closeModal(){
