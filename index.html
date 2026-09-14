@@ -1123,43 +1123,10 @@ const TMDB_IMG_BACKDROP = "https://image.tmdb.org/t/p/w1280";
 const SERVERS = {
   '1':{name:'AutoEmbed Test', url:(id,tv,s,e)=> tv ? `https://test.autoembed.cc/embed/tv/${id}/${s}/${e}?autoplay=true` : `https://test.autoembed.cc/embed/movie/${id}?autoplay=true`},
   '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
-  '3': {
+'3': {
   name: 'Flixy',
-
-  url: async (id, tv, s, e) => {
-    const API = 'https://flixy-backend.vercel.app/api/v1';
-    const token = localStorage.getItem('accessToken');
-
-    try {
-      const response = await fetch(
-        `${API}/videos?query=${encodeURIComponent(id)}&page=1&limit=20`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (!response.ok) {
-        console.error('Flixy API error:', response.status);
-        return null;
-      }
-
-      const data = await response.json();
-      const videos = data?.data?.docs || [];
-
-      if (!videos.length) {
-        return null;
-      }
-
-      const video = videos[0];
-
-      return video.videoFile || video.videoUrl || null;
-    } catch (error) {
-      console.error('Flixy error:', error);
-      return null;
-    }
-  }
+  url: (id, tv, s, e, movie) =>
+    `https://flixy-backend.vercel.app/api/v1/videos/play?tmdbId=${id}&type=${tv ? 'tv' : 'movie'}${tv ? `&season=${s}&episode=${e}` : ''}&title=${encodeURIComponent(movie.title)}`
 },
   '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
   '5':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
@@ -1178,6 +1145,7 @@ async function buildEmbedPool(movie){
   const isTV = movie.type === 'tv';
   const season = movie.season || 1;
   const episode = movie.episode || 1;
+
   const pool = [];
 
   for(const key of Object.keys(SERVERS)){
@@ -1188,18 +1156,31 @@ async function buildEmbedPool(movie){
 
       if(key === '11' && !isTV){
         if(movie.imdbId){
-          url = await server.url(movie.imdbId, false, season, episode);
+          url = await server.url(
+            movie.imdbId,
+            false,
+            season,
+            episode,
+            movie
+          );
         }
       } else {
-        url = await server.url(movie.tmdbId, isTV, season, episode);
+        url = await server.url(
+          movie.tmdbId,
+          isTV,
+          season,
+          episode,
+          movie
+        );
       }
 
       if(url){
         pool.push({
           name: server.name,
-          url: url
+          url
         });
       }
+
     }catch(error){
       console.error(`${server.name} failed:`, error);
     }
