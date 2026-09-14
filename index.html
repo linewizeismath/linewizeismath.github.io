@@ -1125,36 +1125,20 @@ const SERVERS = {
   '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
 '3': {
   name: 'Flixy',
+  url: (id, tv, s, e, movie) => {
+    let url =
+      `https://flixy-backend.vercel.app/api/v1/videos/play` +
+      `?tmdbId=${encodeURIComponent(id)}` +
+      `&type=${tv ? 'tv' : 'movie'}` +
+      `&title=${encodeURIComponent(movie.title)}`;
 
-  url: async (id, tv, s, e, movie) => {
-    const params = new URLSearchParams({
-      tmdbId: id,
-      type: tv ? 'tv' : 'movie'
-    });
-
-    if (tv) {
-      params.set('season', s);
-      params.set('episode', e);
+    if(tv){
+      url +=
+        `&season=${encodeURIComponent(s)}` +
+        `&episode=${encodeURIComponent(e)}`;
     }
 
-    try {
-      const response = await fetch(
-        `https://flixy-backend.vercel.app/api/v1/videos/play?${params.toString()}`
-      );
-
-      if (!response.ok) {
-        console.error('Flixy API error:', response.status);
-        return null;
-      }
-
-      const data = await response.json();
-
-      return data?.data?.videoFile || null;
-
-    } catch (error) {
-      console.error('Flixy error:', error);
-      return null;
-    }
+    return url;
   }
 },
   '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
