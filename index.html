@@ -1206,7 +1206,8 @@ async function buildEmbedPool(movie){
       if(url){
         pool.push({
           name: server.name,
-          url
+          url,
+          type: key === '3' ? 'video' : 'iframe'
         });
       }
 
@@ -2570,21 +2571,19 @@ function playServerAt(index){
 
   const server = currentServerPool[index];
 
-  if(!server){
-    return;
-  }
+  if(!server) return;
 
-  if(server.name === 'Flixy'){
+  if(server.type === 'video'){
     playerWrap.innerHTML = `
       <video
         src="${escapeHtml(server.url)}"
         controls
         autoplay
         playsinline
-        style="width:100%;height:100%;background:#000;object-fit:contain;"
+        style="width:100%;height:100%;background:#000;"
       ></video>
     `;
-  } else {
+  }else{
     playerWrap.innerHTML = `
       <iframe
         src="${escapeHtml(server.url)}"
@@ -2599,7 +2598,17 @@ function playServerAt(index){
     <span class="current-server">
       Source: ${escapeHtml(server.name)}
     </span>
+    <button class="server-switch-btn" id="try-another-source-btn">
+      Not loading? Try another source
+    </button>
   `;
+
+  document.getElementById('try-another-source-btn').onclick = ()=>{
+    const next =
+      (currentServerIndex + 1) % currentServerPool.length;
+
+    playServerAt(next);
+  };
 }
 
 function closeModal(){
