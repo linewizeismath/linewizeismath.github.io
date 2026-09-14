@@ -1172,20 +1172,39 @@ const SERVERS = {
 };
 
 // Builds the ordered fallback list of playable URLs for a resolved movie/tv/anime object.
-function buildEmbedPool(movie){
+async function buildEmbedPool(movie){
   if(!movie.tmdbId) return [];
+
   const isTV = movie.type === 'tv';
-  const season = movie.season || 1, episode = movie.episode || 1;
+  const season = movie.season || 1;
+  const episode = movie.episode || 1;
   const pool = [];
-  Object.keys(SERVERS).forEach(key=>{
+
+  for(const key of Object.keys(SERVERS)){
     const server = SERVERS[key];
-    if(key === '11' && !isTV){
-      // VSembed's movie route needs an IMDB id specifically
-      if(movie.imdbId) pool.push({ name:server.name, url:server.url(movie.imdbId, false, season, episode) });
-    } else {
-      pool.push({ name:server.name, url:server.url(movie.tmdbId, isTV, season, episode) });
+
+    try{
+      let url;
+
+      if(key === '11' && !isTV){
+        if(movie.imdbId){
+          url = await server.url(movie.imdbId, false, season, episode);
+        }
+      } else {
+        url = await server.url(movie.tmdbId, isTV, season, episode);
+      }
+
+      if(url){
+        pool.push({
+          name: server.name,
+          url: url
+        });
+      }
+    }catch(error){
+      console.error(`${server.name} failed:`, error);
     }
-  });
+  }
+
   return pool;
 }
 
@@ -2460,7 +2479,7 @@ async function openModal(movie){
     if(activeMovie !== movie) return; // modal was closed or another title opened meanwhile
   }
 
-  currentServerPool = buildEmbedPool(movie);
+  currentServerPool = await buildEmbedPool(movie);
   currentServerIndex = 0;
 
   if(currentServerPool.length > 0){
@@ -2530,8 +2549,8 @@ function populateEpisodeOptions(movie, seasons){
   episodeSel.value = movie.episode || 1;
 }
 
-function reloadWithNewEpisode(movie){
-  currentServerPool = buildEmbedPool(movie);
+async function reloadWithNewEpisode(movie){
+  currentServerPool = await buildEmbedPool(movie);
   currentServerIndex = 0;
   if(currentServerPool.length > 0) playServerAt(0);
 }
