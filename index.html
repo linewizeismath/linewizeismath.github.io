@@ -1123,22 +1123,42 @@ const TMDB_IMG_BACKDROP = "https://image.tmdb.org/t/p/w1280";
 const SERVERS = {
   '1':{name:'AutoEmbed Test', url:(id,tv,s,e)=> tv ? `https://test.autoembed.cc/embed/tv/${id}/${s}/${e}?autoplay=true` : `https://test.autoembed.cc/embed/movie/${id}?autoplay=true`},
   '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
-'3': {
+  '3': {
   name: 'Flixy',
-  url: (id, tv, s, e, movie) => {
-    let url =
-      `https://flixy-backend.vercel.app/api/v1/videos/play` +
-      `?tmdbId=${encodeURIComponent(id)}` +
-      `&type=${tv ? 'tv' : 'movie'}` +
-      `&title=${encodeURIComponent(movie.title)}`;
 
-    if(tv){
-      url +=
-        `&season=${encodeURIComponent(s)}` +
-        `&episode=${encodeURIComponent(e)}`;
+  url: async (id, tv, s, e) => {
+    const API = 'https://flixy-backend.vercel.app/api/v1';
+    const token = localStorage.getItem('accessToken');
+
+    try {
+      const response = await fetch(
+        `${API}/videos?query=${encodeURIComponent(id)}&page=1&limit=20`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.error('Flixy API error:', response.status);
+        return null;
+      }
+
+      const data = await response.json();
+      const videos = data?.data?.docs || [];
+
+      if (!videos.length) {
+        return null;
+      }
+
+      const video = videos[0];
+
+      return video.videoFile || video.videoUrl || null;
+    } catch (error) {
+      console.error('Flixy error:', error);
+      return null;
     }
-
-    return url;
   }
 },
   '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
@@ -1152,54 +1172,20 @@ const SERVERS = {
 };
 
 // Builds the ordered fallback list of playable URLs for a resolved movie/tv/anime object.
-async function buildEmbedPool(movie){
+function buildEmbedPool(movie){
   if(!movie.tmdbId) return [];
-
   const isTV = movie.type === 'tv';
-  const season = movie.season || 1;
-  const episode = movie.episode || 1;
-
+  const season = movie.season || 1, episode = movie.episode || 1;
   const pool = [];
-
-  for(const key of Object.keys(SERVERS)){
+  Object.keys(SERVERS).forEach(key=>{
     const server = SERVERS[key];
-
-    try{
-      let url;
-
-      if(key === '11' && !isTV){
-        if(movie.imdbId){
-          url = await server.url(
-            movie.imdbId,
-            false,
-            season,
-            episode,
-            movie
-          );
-        }
-      } else {
-        url = await server.url(
-          movie.tmdbId,
-          isTV,
-          season,
-          episode,
-          movie
-        );
-      }
-
-      if(url){
-        pool.push({
-          name: server.name,
-          url,
-          type: key === '3' ? 'video' : 'iframe'
-        });
-      }
-
-    }catch(error){
-      console.error(`${server.name} failed:`, error);
+    if(key === '11' && !isTV){
+      // VSembed's movie route needs an IMDB id specifically
+      if(movie.imdbId) pool.push({ name:server.name, url:server.url(movie.imdbId, false, season, episode) });
+    } else {
+      pool.push({ name:server.name, url:server.url(movie.tmdbId, isTV, season, episode) });
     }
-  }
-
+  });
   return pool;
 }
 
@@ -2474,7 +2460,7 @@ async function openModal(movie){
     if(activeMovie !== movie) return; // modal was closed or another title opened meanwhile
   }
 
-  currentServerPool = await buildEmbedPool(movie);
+  currentServerPool = buildEmbedPool(movie);
   currentServerIndex = 0;
 
   if(currentServerPool.length > 0){
@@ -2544,53 +2530,22 @@ function populateEpisodeOptions(movie, seasons){
   episodeSel.value = movie.episode || 1;
 }
 
-async function reloadWithNewEpisode(movie){
-  currentServerPool = await buildEmbedPool(movie);
+function reloadWithNewEpisode(movie){
+  currentServerPool = buildEmbedPool(movie);
   currentServerIndex = 0;
   if(currentServerPool.length > 0) playServerAt(0);
 }
 
 function playServerAt(index){
   currentServerIndex = index;
-
   const server = currentServerPool[index];
-
-  if(!server) return;
-
-  if(server.type === 'video'){
-    playerWrap.innerHTML = `
-      <video
-        src="${escapeHtml(server.url)}"
-        controls
-        autoplay
-        playsinline
-        style="width:100%;height:100%;background:#000;"
-      ></video>
-    `;
-  }else{
-    playerWrap.innerHTML = `
-      <iframe
-        src="${escapeHtml(server.url)}"
-        allow="autoplay; encrypted-media; fullscreen"
-        allowfullscreen
-        referrerpolicy="no-referrer">
-      </iframe>
-    `;
-  }
-
+  playerWrap.innerHTML = `<iframe src="${server.url}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
   serverSwitchRow.innerHTML = `
-    <span class="current-server">
-      Source: ${escapeHtml(server.name)}
-    </span>
-    <button class="server-switch-btn" id="try-another-source-btn">
-      Not loading? Try another source
-    </button>
+    <span class="current-server">Source: ${escapeHtml(server.name)}</span>
+    <button class="server-switch-btn" id="try-another-source-btn">Not loading? Try another source</button>
   `;
-
   document.getElementById('try-another-source-btn').onclick = ()=>{
-    const next =
-      (currentServerIndex + 1) % currentServerPool.length;
-
+    const next = (currentServerIndex + 1) % currentServerPool.length;
     playServerAt(next);
   };
 }
