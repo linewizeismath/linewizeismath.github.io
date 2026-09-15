@@ -1121,54 +1121,10 @@ const TMDB_IMG_BACKDROP = "https://image.tmdb.org/t/p/w1280";
    All functions receive: (id, isTV, season, episode)
 =========================================================== */
 const SERVERS = {
-  '1':{name:'AutoEmbed Test', url:(id,tv,s,e)=> tv ? `https://test.autoembed.cc/embed/tv/${id}/${s}/${e}?autoplay=true` : `https://test.autoembed.cc/embed/movie/${id}?autoplay=true`},
-  '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
-  '3': {
-  name: 'Flixy',
-
-  url: async (id, tv, s, e) => {
-    const API = 'https://flixy-backend.vercel.app/api/v1';
-    const token = localStorage.getItem('accessToken');
-
-    try {
-      const response = await fetch(
-        `${API}/videos?query=${encodeURIComponent(id)}&page=1&limit=20`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (!response.ok) {
-        console.error('Flixy API error:', response.status);
-        return null;
-      }
-
-      const data = await response.json();
-      const videos = data?.data?.docs || [];
-
-      if (!videos.length) {
-        return null;
-      }
-
-      const video = videos[0];
-
-      return video.videoFile || video.videoUrl || null;
-    } catch (error) {
-      console.error('Flixy error:', error);
-      return null;
-    }
-  }
-},
-  '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
-  '5':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
-  '6':{name:'MultiEmbed', url:(id,tv,s,e)=> tv ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1`},
-  '7':{name:'Embed.su', url:(id,tv,s,e)=> tv ? `https://embed.su/embed/tv/${id}/${s}/${e}` : `https://embed.su/embed/movie/${id}`},
-  '8':{name:'VidSrc.xyz', url:(id,tv,s,e)=> tv ? `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.xyz/embed/movie?tmdb=${id}`},
-  '9':{name:'VidSrc.me', url:(id,tv,s,e)=> tv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`},
-  '10':{name:'VidSrc.in', url:(id,tv,s,e)=> tv ? `https://vidsrc.in/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.in/embed/movie?tmdb=${id}`},
-  '11':{name:'VSembed', url:(id,tv,s,e)=> tv ? `https://vsembed.ru/embed/tv/${id}/${s}/${e}` : `https://vsembed.ru/embed/movie/${id}`},
+  '1':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
+  '2':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
+  '3':{name:'VidSrc.me', url:(id,tv,s,e)=> tv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`},
+  '4':{name:'VSembed', url:(id,tv,s,e)=> tv ? `https://vsembed.ru/embed/tv/${id}/${s}/${e}` : `https://vsembed.ru/embed/movie/${id}`}
 };
 
 // Builds the ordered fallback list of playable URLs for a resolved movie/tv/anime object.
