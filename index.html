@@ -528,17 +528,28 @@
 
   .owner-mode-tabs{display:flex;gap:8px;margin-bottom:16px;}
   .owner-mode-tab{
-    background:#1c1c1c;border:1px solid #333;color:#aaa;padding:8px 16px;border-radius:20px;
+    display:inline-flex;align-items:center;gap:8px;
+    background:#1c1c1c;border:1px solid #333;color:#aaa;padding:8px 14px;border-radius:5px;
     font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+    transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
   }
+  .owner-mode-tab:hover{background:#252525;border-color:#555;color:#fff;transform:translateY(-1px);}
+  .owner-mode-tab svg{width:17px;height:17px;flex-shrink:0;}
   .owner-mode-tab.active{background:rgba(255,215,0,.12);border-color:#FFD700;color:#FFD700;}
 
   .owner-ban-search-wrap{position:relative;margin-bottom:14px;}
   #owner-ban-search-input{
-    width:100%;background:#1c1c1c;border:1px solid #444;border-radius:6px;
-    padding:11px 14px;color:#fff;font-size:14px;outline:none;
+    width:100%;background:#777;color:#fff;border:1px solid #b51f2a;border-radius:5px;
+    padding:11px 14px;font-size:14px;outline:none;box-shadow:0 0 0 1px rgba(229,9,20,.12),0 6px 18px rgba(0,0,0,.18);
   }
-  #owner-ban-search-input:focus{border-color:#FFD700;}
+  #owner-ban-search-input::placeholder{color:#e8e8e8;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;opacity:1;}
+  #owner-ban-search-input:focus{border-color:#e50914;box-shadow:0 0 0 2px rgba(229,9,20,.2),0 8px 22px rgba(0,0,0,.28);}
+  #owner-role-search-input{
+    width:100%;background:#777;color:#fff;border:1px solid #b51f2a;border-radius:5px;
+    padding:11px 14px;font-size:14px;outline:none;box-shadow:0 0 0 1px rgba(229,9,20,.12),0 6px 18px rgba(0,0,0,.18);
+  }
+  #owner-role-search-input::placeholder{color:#e8e8e8;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;opacity:1;}
+  #owner-role-search-input:focus{border-color:#e50914;box-shadow:0 0 0 2px rgba(229,9,20,.2),0 8px 22px rgba(0,0,0,.28);}
   .owner-ban-dropdown{
     position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:10;
     background:#1c1c1c;border:1px solid #444;border-radius:8px;max-height:220px;overflow-y:auto;
@@ -589,7 +600,9 @@
   .owner-role-user .owner-user-meta{color:#aaa;}
   .owner-role-badge{font-size:10px;font-weight:800;color:#FFD700;border:1px solid rgba(255,215,0,.45);border-radius:10px;padding:4px 8px;}
   .owner-add-role-btn{background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;color:#111;padding:8px 12px;border-radius:6px;font-size:11px;font-weight:800;white-space:nowrap;}
+  .owner-remove-role-btn{background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.55);color:#ff8a8a;padding:8px 12px;border-radius:6px;font-size:11px;font-weight:800;white-space:nowrap;}
   .owner-add-role-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .owner-remove-role-btn:hover{background:rgba(229,9,20,.25);color:#fff;}
   @media(max-width:620px){.owner-role-grid{grid-template-columns:1fr;}}
   
   .settings-btn{
@@ -1024,7 +1037,7 @@
       <div class="owner-panel-head">
         <svg viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4l-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
         <div>
-          <div class="owner-panel-title">Owner Panel</div>
+          <div class="owner-panel-title" id="owner-panel-title">Owner Panel</div>
           <div class="owner-panel-sub" id="owner-panel-sub">Generate Premium codes to give out to members</div>
         </div>
       </div>
@@ -1036,7 +1049,7 @@
 
       <div class="owner-mode-tabs">
         <button class="owner-mode-tab active" id="owner-mode-codes-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><path d="M8 4v4M16 4v4M8 16h8M8 12h3"/></svg> Generate Codes</button>
-        <button class="owner-mode-tab" id="owner-mode-ban-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 4 6 6M12 6l6 6M4 20l8-8M3 21l4-1 2-3-3-3-3 2z"/><path d="m15 3 6 6"/></svg> Ban Users</button>
+        <button class="owner-mode-tab" id="owner-mode-ban-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 3.5 6 6"/><path d="m12.2 5.8 6 6"/><path d="m3.2 20.8 4.1-1 10.1-10.1-3.1-3.1L4.2 16.7z"/><path d="m4.2 16.7 3.1 3.1"/><path d="m8.8 14.7 2.2 2.2"/><path d="m17.2 2.8 4 4"/><path d="m2.5 21.5 3.8-.9"/></svg> Ban Users</button>
         <button class="owner-mode-tab" id="owner-mode-roles-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg> Roles</button>
       </div>
 
@@ -1079,7 +1092,7 @@
       <!-- ROLES MODE -->
       <div id="owner-mode-roles" class="hidden">
         <div class="owner-role-grid">
-          <button class="owner-role-card active" data-role="PREMIUM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.8 5.7L21 10l-4.5 4.4 1.1 6.1-5.6-2.9-5.6 2.9 1.1-6.1L3 10l6.2-1.3z"/></svg> PREMIUM</button>
+          <button class="owner-role-card active" data-role="PREMIUM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5 7.4 13 12 5l4.6 8L20 9.5l-1.5 9H5.5z"/><path d="M5.5 18.5h13"/><path d="M9 15.5h6"/><path d="m12 2 .5 1.2L14 4l-1.5.8L12 6l-.5-1.2L10 4l1.5-.8z"/></svg> PREMIUM</button>
           <button class="owner-role-card" data-role="ADMIN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v5c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg> ADMIN</button>
           <button class="owner-role-card" data-role="OWNER"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.8 5.7L21 10l-4.5 4.4 1.1 6.1-5.6-2.9-5.6 2.9 1.1-6.1L3 10l6.2-1.3z"/></svg> OWNER</button>
         </div>
@@ -1796,10 +1809,14 @@ function userKey(uid, suffix){ return `vixflix_${uid}_${suffix}`; }
 =========================================================== */
 const OWNER_EMAIL = 'baktashanwari234@gmail.com';
 const FREE_CATALOG_LIMIT = 12;
-function isOwner(){
-  return !!(currentUser && currentUser.email === OWNER_EMAIL);
-}
-function isPremium(){
+  function isOwner(){
+  return !!(currentUser && String(currentUser.email || '').trim().toLowerCase() === OWNER_EMAIL.toLowerCase());
+  }
+  function isAdmin(){
+  return !!(currentUser && Array.isArray(currentUser.roles) && currentUser.roles.includes('ADMIN'));
+  }
+  function canManageUsers(){ return isOwner() || isAdmin(); }
+  function isPremium(){
   return !!(currentUser && LS.get(userKey(currentUser.uid, 'premium'), false));
 }
 function setPremium(val){
@@ -2633,9 +2650,16 @@ function generateRandomCode(length){
 
 function renderOwnerPanel(){
   const panel = document.getElementById('owner-panel');
-  if(!isOwner()){ panel.classList.add('hidden'); return; }
+  if(!canManageUsers()){ panel.classList.add('hidden'); return; }
   panel.classList.remove('hidden');
-  loadOwnerCodesList();
+  const codesButton = document.getElementById('owner-mode-codes-btn');
+  const codesMode = document.getElementById('owner-mode-codes');
+  const isOwnerAccount = isOwner();
+  codesButton.classList.toggle('hidden', !isOwnerAccount);
+  codesMode.classList.toggle('hidden', !isOwnerAccount);
+  document.getElementById('owner-panel-title').textContent = isOwnerAccount ? 'Owner Panel' : 'Admin Panel';
+  if(!isOwnerAccount) setOwnerMode('roles');
+  if(isOwnerAccount) loadOwnerCodesList();
   loadOwnerUserCount();
 }
 
@@ -2822,7 +2846,7 @@ function formatAccountDate(value){
 }
 async function loadOwnerRoleUsers(){
   const list = document.getElementById('owner-role-users');
-  if(!list || !isOwner()) return;
+  if(!list || !canManageUsers()) return;
   list.innerHTML = '<p class="row-empty-note">Loading users...</p>';
   try{
     const snap = await getDocs(collection(db, 'users'));
@@ -2846,21 +2870,40 @@ async function loadOwnerRoleUsers(){
       const details = document.createElement('div'); details.className='owner-user-details';
       details.innerHTML=`<div class="owner-user-name">${escapeHtml(user.name)}</div><div class="owner-user-email">${escapeHtml(user.email)}</div><div class="owner-user-meta">${escapeHtml(user.subscription)} · Joined ${escapeHtml(formatAccountDate(user.createdAt))}</div>`;
       const has = userHasRole(user, ownerSelectedRole); const roleBadge=document.createElement('span'); roleBadge.className='owner-role-badge'; roleBadge.textContent=has ? ownerSelectedRole : 'No role';
-      const btn=document.createElement('button'); btn.className='owner-add-role-btn'; btn.textContent=has ? 'Assigned' : 'Add Role'; btn.disabled=has;
-      btn.addEventListener('click',()=>assignOwnerRole(user, ownerSelectedRole));
+      const btn=document.createElement('button'); btn.className=has ? 'owner-remove-role-btn' : 'owner-add-role-btn'; btn.textContent=has ? 'Remove Role' : 'Add Role';
+      btn.addEventListener('click',()=> has ? removeOwnerRole(user, ownerSelectedRole) : assignOwnerRole(user, ownerSelectedRole));
       card.append(avatar,details,roleBadge,btn); list.appendChild(card);
     });
-  }catch(e){ console.warn('Failed to load role users',e); list.innerHTML='<p class="row-empty-note">Could not load users. Check Firestore rules allow the owner to read users.</p>'; }
+  }catch(e){ console.warn('Failed to load role users',e); list.innerHTML='<p class="row-empty-note">Could not load users. Check Firestore rules allow managers to read users.</p>'; }
 }
 async function assignOwnerRole(user, role){
-  if(!isOwner() || !user || user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) return;
+  if(!canManageUsers() || !user || user.email.toLowerCase() === OWNER_EMAIL.toLowerCase() || (isAdmin() && role === 'OWNER')) return;
   try{
     const nextRoles = Array.from(new Set([...(user.roles || []), role]));
     const changes = { roles: nextRoles, roleUpdatedAt: serverTimestamp(), roleUpdatedBy: currentUser.uid };
     if(role === 'PREMIUM') { changes.premium = true; changes.subscription = 'Premium'; }
     await updateDoc(doc(db,'users',user.uid), changes);
-    toast(`${role} added to ${user.name}.`); loadOwnerRoleUsers();
-  }catch(e){ console.warn('Role assignment failed',e); toast('Could not assign that role — check Firestore owner permissions.'); }
+    toast(`${role} added to ${user.name}.`);
+    await loadOwnerRoleUsers();
+  }catch(e){
+    console.warn('Role assignment failed',e);
+    toast(e?.code === 'permission-denied' ? 'Permission denied — publish the manager Firestore rule first.' : 'Could not assign that role. Please try again.');
+  }
+}
+async function removeOwnerRole(user, role){
+  if(!canManageUsers() || !user || user.email.toLowerCase() === OWNER_EMAIL.toLowerCase() || (isAdmin() && role === 'OWNER')) return;
+  if(!confirm(`Remove ${role} from ${user.name}?`)) return;
+  try{
+    const nextRoles = (user.roles || []).filter(existingRole => existingRole !== role);
+    const changes = { roles: nextRoles, roleUpdatedAt: serverTimestamp(), roleUpdatedBy: currentUser.uid };
+    if(role === 'PREMIUM') { changes.premium = false; changes.subscription = 'Free'; changes.premiumCode = null; }
+    await updateDoc(doc(db,'users',user.uid), changes);
+    toast(`${role} removed from ${user.name}.`);
+    await loadOwnerRoleUsers();
+  }catch(e){
+    console.warn('Role removal failed',e);
+    toast(e?.code === 'permission-denied' ? 'Permission denied — publish the manager Firestore rule first.' : 'Could not remove that role. Please try again.');
+  }
 }
 document.querySelectorAll('.owner-role-card').forEach(card=>card.addEventListener('click',()=>{
   ownerSelectedRole=card.dataset.role;
