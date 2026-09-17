@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -563,7 +564,17 @@
   .owner-ban-btn:hover{background:#8a1717;}
   .owner-ban-btn.unban-mode{background:rgba(46,204,113,.15);border-color:#2ecc71;color:#2ecc71;}
   .owner-ban-btn.unban-mode:hover{background:rgba(46,204,113,.25);}
-
+  .owner-users-list-wrap{margin-top:18px;}
+  .owner-users-list{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;}
+  .owner-user-card{display:flex;align-items:center;gap:12px;background:#1c1c1c;border:1px solid #333;border-radius:8px;padding:10px 12px;min-width:0;}
+  .owner-user-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#333;flex-shrink:0;}
+  .owner-user-details{min-width:0;flex:1;}
+  .owner-user-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .owner-user-email,.owner-user-meta{font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+  .owner-user-status{font-size:10px;font-weight:800;padding:4px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+  .owner-user-status.banned{background:rgba(229,9,20,.18);color:#ff7777;}
+  .owner-user-status.active{background:rgba(46,204,113,.15);color:#2ecc71;}
+  
   .settings-btn{
     background:#3a3a3a;color:#fff;border:1px solid #666;padding:8px 16px;
     border-radius:4px;font-size:13.5px;font-weight:600;
@@ -1037,11 +1048,15 @@
           </div>
           <button class="owner-ban-btn" id="owner-ban-action-btn">Ban User</button>
         </div>
-        <div class="owner-codes-list-wrap">
-          <div class="owner-codes-list-title">Currently banned</div>
-          <div class="owner-codes-list" id="owner-banned-list"><p class="row-empty-note">No banned users.</p></div>
-        </div>
-      </div>
+  <div class="owner-codes-list-wrap">
+  <div class="owner-codes-list-title">Currently banned</div>
+  <div class="owner-codes-list" id="owner-banned-list"><p class="row-empty-note">No banned users.</p></div>
+  </div>
+  <div class="owner-users-list-wrap">
+  <div class="owner-codes-list-title">All registered users</div>
+  <div class="owner-users-list" id="owner-users-list"><p class="row-empty-note">Open this tab to load users.</p></div>
+  </div>
+  </div>
     </div>
 
     <div class="settings-row">
@@ -1479,7 +1494,6 @@ const DISCOVER_CATEGORIES = [
   { label:'Popular Movies', type:'movie', path:'discover/movie?sort_by=popularity.desc', pages:3 },
   { label:'Top Rated Movies', type:'movie', path:'discover/movie?sort_by=vote_average.desc&vote_count.gte=1000', pages:2 },
   { label:'Now Playing', type:'movie', path:'discover/movie?sort_by=popularity.desc&primary_release_date.lte=TODAY', pages:2 },
-  { label:'Upcoming', type:'movie', path:'discover/movie?sort_by=popularity.desc&primary_release_date.gte=TODAY', pages:2 },
   { label:'Action Movies', type:'movie', path:'discover/movie?with_genres=28&sort_by=popularity.desc', pages:2 },
   { label:'Comedy Movies', type:'movie', path:'discover/movie?with_genres=35&sort_by=popularity.desc', pages:2 },
   { label:'Horror Movies', type:'movie', path:'discover/movie?with_genres=27&sort_by=popularity.desc', pages:2 },
@@ -2036,6 +2050,7 @@ async function syncUserDoc(user){
       await setDoc(ref, {
         email: user.email || '',
         displayName: user.displayName || '',
+        photoURL: user.photoURL || '',
         createdAt: serverTimestamp(),
         lastSeen: serverTimestamp(),
         banned: false,
@@ -2051,7 +2066,7 @@ async function syncUserDoc(user){
     // Firestore is the source of truth for premium so revocation (deleting a
     // code) takes effect the next time this account logs in on any device.
     setPremium(data.premium === true);
-    updateDoc(ref, { lastSeen: serverTimestamp(), email: user.email || '' }).catch(()=>{});
+    updateDoc(ref, { lastSeen: serverTimestamp(), email: user.email || '', displayName: user.displayName || '', photoURL: user.photoURL || '' }).catch(()=>{});
     return { banned: false };
   }catch(e){
     console.warn('User doc sync failed (continuing without it):', e);
@@ -2600,7 +2615,8 @@ document.getElementById('owner-mode-ban-btn').addEventListener('click', ()=>{
   document.getElementById('owner-panel-sub').textContent = 'Search a member to ban or unban them';
   loadAllUsersForBanSearch();
   loadBannedUsersList();
-});
+  loadOwnerUsersList();
+  });
 
 /* ---- user count ---- */
 async function loadOwnerUserCount(){
@@ -2622,8 +2638,56 @@ async function loadOwnerUserCount(){
   }
 }
 
-/* ---- generated codes list (with delete + revoke) ---- */
-async function loadOwnerCodesList(){
+  /* ---- all registered users shown in the Ban Users panel ---- */
+  async function loadOwnerUsersList(){
+    const list = document.getElementById('owner-users-list');
+    list.innerHTML = '<p class="row-empty-note">Loading users...</p>';
+    try{
+      const snap = await getDocs(collection(db, 'users'));
+      const users = [];
+      snap.forEach(docSnap=>{
+        const d = docSnap.data();
+        users.push({
+          uid: docSnap.id,
+          name: d.displayName || (d.email ? d.email.split('@')[0] : 'Unnamed user'),
+          email: d.email || 'No email available',
+          photoURL: d.photoURL || '',
+          banned: d.banned === true,
+          createdAt: d.createdAt
+        });
+      });
+      users.sort((a,b)=> a.name.localeCompare(b.name));
+      if(!users.length){
+        list.innerHTML = '<p class="row-empty-note">No registered users found.</p>';
+        return;
+      }
+      list.innerHTML = '';
+      users.forEach(user=>{
+        const card = document.createElement('div');
+        card.className = 'owner-user-card';
+        const avatar = document.createElement('img');
+        avatar.className = 'owner-user-avatar';
+        avatar.alt = `${user.name} profile photo`;
+        avatar.src = user.photoURL || 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"><rect width="100%" height="100%" fill="#333"/><text x="50%" y="55%" text-anchor="middle" fill="#aaa" font-size="18" font-family="Arial">${(user.name[0] || '?').toUpperCase()}</text></svg>`);
+        avatar.onerror = ()=>{ avatar.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"><rect width="100%" height="100%" fill="#333"/><text x="50%" y="55%" text-anchor="middle" fill="#aaa" font-size="18" font-family="Arial">?</text></svg>'); };
+        const details = document.createElement('div');
+        details.className = 'owner-user-details';
+        const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleString([], { dateStyle:'medium', timeStyle:'short' }) : 'Account date unavailable';
+        details.innerHTML = `<div class="owner-user-name">${escapeHtml(user.name)}</div><div class="owner-user-email">${escapeHtml(user.email)}</div><div class="owner-user-meta">Joined ${escapeHtml(created)}</div>`;
+        const status = document.createElement('span');
+        status.className = `owner-user-status ${user.banned ? 'banned' : 'active'}`;
+        status.textContent = user.banned ? 'Banned' : 'Active';
+        card.append(avatar, details, status);
+        list.appendChild(card);
+      });
+    }catch(e){
+      console.warn('Failed to load owner users list', e);
+      list.innerHTML = '<p class="row-empty-note">Could not load users. Check Firestore rules allow the owner to read the users collection.</p>';
+    }
+  }
+
+  /* ---- generated codes list (with delete + revoke) ---- */
+  async function loadOwnerCodesList(){
   const list = document.getElementById('owner-codes-list');
   list.innerHTML = '<p class="row-empty-note">Loading...</p>';
   try{
