@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -253,11 +252,32 @@
   .hamburger{display:none;background:none;border:none;color:#fff;}
   .hamburger svg{width:24px;height:24px;}
   .mobile-nav-links{
-    display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:#0b0b0b;
-    z-index:59;flex-direction:column;padding:10px 20px 20px;border-bottom:1px solid #262626;
+    display:none;position:fixed;top:0;left:0;bottom:0;width:78%;max-width:300px;
+    background:#0b0b0b;z-index:150;flex-direction:column;padding:0 0 20px;
+    border-right:1px solid #262626;box-shadow:8px 0 30px rgba(0,0,0,.5);
+    animation:slideInNav .25s ease;overflow-y:auto;
   }
+  @keyframes slideInNav{from{transform:translateX(-100%);}to{transform:translateX(0);}}
   .mobile-nav-links.open{display:flex;}
-  .mobile-nav-links a{padding:12px 0;font-size:15px;border-bottom:1px solid #1f1f1f;color:#e5e5e5;}
+  .mobile-nav-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 20px;border-bottom:1px solid #1f1f1f;margin-bottom:6px;
+  }
+  .mobile-nav-head span{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;}
+  .mobile-nav-close{background:none;border:none;color:#aaa;padding:4px;}
+  .mobile-nav-close svg{width:20px;height:20px;}
+  .mobile-nav-links a{
+    display:flex;align-items:center;gap:14px;padding:15px 20px;font-size:15px;
+    color:#e5e5e5;border-bottom:1px solid #161616;-webkit-tap-highlight-color:transparent;
+  }
+  .mobile-nav-links a:active{background:#1a1a1a;}
+  .mobile-nav-links a svg{width:20px;height:20px;flex-shrink:0;color:#999;}
+  .mobile-nav-links a.active{color:#fff;}
+  .mobile-nav-links a.active svg{color:var(--red);}
+  .mobile-nav-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:149;
+  }
+  .mobile-nav-backdrop.open{display:block;}
 
   /* ---- Hero ---- */
   .hero{
@@ -299,9 +319,25 @@
     background:rgba(255,255,255,.08);border:1px solid var(--border);color:#ccc;
     padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;
     cursor:pointer;white-space:nowrap;transition:.2s ease;flex-shrink:0;
+    display:inline-flex;align-items:center;gap:6px;
   }
+  .genre-pill svg{width:14px;height:14px;flex-shrink:0;}
   .genre-pill:hover{border-color:#fff;color:#fff;}
   .genre-pill.active{background:var(--red);border-color:var(--red);color:#fff;}
+
+  .played-row{
+    display:flex;gap:10px;overflow-x:auto;padding:20px 32px 4px;
+    position:relative;z-index:2;scrollbar-width:none;
+  }
+  .played-row::-webkit-scrollbar{display:none;}
+  .played-pill{
+    display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);
+    border:1px solid var(--border);border-radius:20px;padding:5px 14px 5px 5px;
+    cursor:pointer;flex-shrink:0;transition:.2s ease;color:#ddd;
+  }
+  .played-pill:hover{border-color:#fff;background:rgba(255,255,255,.12);}
+  .played-pill img{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+  .played-pill span{font-size:12px;font-weight:600;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
 
   .discover-more-section{padding:20px 32px 10px;border-top:1px solid var(--border);}
   .discover-more-header{text-align:center;margin-bottom:24px;}
@@ -366,10 +402,18 @@
   #search-view{padding:calc(var(--nav-h) + 30px) 32px 60px;}
   #search-view h2{font-weight:600;font-size:20px;margin-bottom:20px;}
   .search-grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:22px 20px;
   }
   .search-grid .card-item{width:100%;}
   .no-results{color:var(--text-dim);padding-top:20px;}
+
+  /* ---- Upcoming ---- */
+  #upcoming-view{padding:calc(var(--nav-h) + 30px) 32px 60px;}
+  #upcoming-view h2{font-weight:600;font-size:20px;margin-bottom:6px;}
+  .upcoming-view-sub{color:var(--text-dim);font-size:13.5px;margin-bottom:22px;}
+  .upcoming-card-date{
+    display:block;font-size:11px;color:var(--red);font-weight:700;margin-top:6px;
+  }
 
   /* ---- Settings ---- */
   #settings-view{padding:calc(var(--nav-h) + 40px) 24px 80px;max-width:760px;margin:0 auto;}
@@ -469,6 +513,56 @@
   .owner-code-status{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;font-family:'Inter',sans-serif;}
   .owner-code-status.unused{background:rgba(46,204,113,.15);color:#2ecc71;}
   .owner-code-status.used{background:rgba(255,255,255,.08);color:#888;}
+  .owner-code-delete-btn{
+    background:none;border:1px solid #661111;color:#ff8a8a;border-radius:5px;
+    padding:3px 9px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .owner-code-delete-btn:hover{background:#661111;color:#fff;}
+
+  .owner-user-count{
+    display:flex;align-items:center;gap:8px;color:#ccc;font-size:12.5px;
+    background:rgba(255,255,255,.05);border-radius:6px;padding:8px 12px;margin-bottom:16px;
+  }
+  .owner-user-count svg{width:16px;height:16px;flex-shrink:0;color:#FFD700;}
+
+  .owner-mode-tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .owner-mode-tab{
+    background:#1c1c1c;border:1px solid #333;color:#aaa;padding:8px 16px;border-radius:20px;
+    font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .owner-mode-tab.active{background:rgba(255,215,0,.12);border-color:#FFD700;color:#FFD700;}
+
+  .owner-ban-search-wrap{position:relative;margin-bottom:14px;}
+  #owner-ban-search-input{
+    width:100%;background:#1c1c1c;border:1px solid #444;border-radius:6px;
+    padding:11px 14px;color:#fff;font-size:14px;outline:none;
+  }
+  #owner-ban-search-input:focus{border-color:#FFD700;}
+  .owner-ban-dropdown{
+    position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:10;
+    background:#1c1c1c;border:1px solid #444;border-radius:8px;max-height:220px;overflow-y:auto;
+    box-shadow:0 8px 24px rgba(0,0,0,.5);
+  }
+  .owner-ban-dropdown-item{
+    display:flex;flex-direction:column;padding:9px 14px;cursor:pointer;border-bottom:1px solid #2a2a2a;
+  }
+  .owner-ban-dropdown-item:last-child{border-bottom:none;}
+  .owner-ban-dropdown-item:hover{background:#272727;}
+  .owner-ban-dropdown-item .ddi-name{font-size:13px;font-weight:600;color:#fff;}
+  .owner-ban-dropdown-item .ddi-email{font-size:11px;color:#888;}
+  .owner-ban-selected{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    background:#1c1c1c;border:1px solid #444;border-radius:8px;padding:12px 14px;margin-bottom:16px;
+  }
+  .owner-ban-selected-name{font-size:14px;font-weight:700;}
+  .owner-ban-selected-email{font-size:12px;color:#888;}
+  .owner-ban-btn{
+    background:#661111;border:1px solid #a33;color:#fff;padding:9px 18px;border-radius:6px;
+    font-size:12.5px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;
+  }
+  .owner-ban-btn:hover{background:#8a1717;}
+  .owner-ban-btn.unban-mode{background:rgba(46,204,113,.15);border-color:#2ecc71;color:#2ecc71;}
+  .owner-ban-btn.unban-mode:hover{background:rgba(46,204,113,.25);}
 
   .settings-btn{
     background:#3a3a3a;color:#fff;border:1px solid #666;padding:8px 16px;
@@ -532,6 +626,25 @@
   .small-modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
   .small-modal-create-btn{width:auto;flex:1;min-width:140px;margin:0;padding:11px 20px;}
 
+  .warning-modal-box{
+    background:#1a1408;width:100%;max-width:440px;border-radius:10px;
+    padding:32px 28px;border:1px solid rgba(255,193,7,.4);text-align:center;
+  }
+  .warning-modal-heading{
+    display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px;
+  }
+  .warning-modal-heading svg{width:30px;height:30px;flex-shrink:0;}
+  .warning-modal-heading span{
+    font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:#FFC107;
+  }
+  .warning-modal-desc{font-size:14px;line-height:1.65;color:#e5d9b8;margin-bottom:26px;}
+  .warning-continue-btn{
+    width:100%;background:#3a3a3a;color:#888;border:none;padding:13px;border-radius:6px;
+    font-size:15px;font-weight:800;cursor:not-allowed;transition:.2s ease;letter-spacing:.5px;
+  }
+  .warning-continue-btn.ready{background:var(--red);color:#fff;cursor:pointer;}
+  .warning-continue-btn.ready:hover{background:var(--red-dark);}
+
   .player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;}
   .player-wrap iframe, .player-wrap video{width:100%;height:100%;border:none;display:block;}
   .player-placeholder{
@@ -544,6 +657,15 @@
   .modal-meta{display:flex;gap:12px;align-items:center;color:var(--text-dim);font-size:13px;margin-bottom:14px;}
   .match{color:#46d369;font-weight:700;}
   .modal-desc{color:#e5e5e5;font-size:14.5px;line-height:1.55;}
+  .upcoming-gallery{display:flex;gap:2px;width:100%;aspect-ratio:16/7;overflow:hidden;background:#000;}
+  .upcoming-gallery img{flex:1;width:100%;height:100%;object-fit:cover;min-width:0;}
+  .upcoming-gallery .no-images{
+    width:100%;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:13px;
+  }
+  .upcoming-release-badge{
+    background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;
+    border-radius:4px;text-transform:uppercase;letter-spacing:.5px;
+  }
   .modal-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
   .pill-btn{
     display:flex;align-items:center;gap:8px;border:1px solid #666;background:transparent;
@@ -597,11 +719,13 @@
     .navbar{padding:0 16px;}
     #settings-view{padding:calc(var(--nav-h) + 24px) 16px 60px;}
     #search-view{padding:calc(var(--nav-h) + 20px) 16px 60px;}
+    #upcoming-view{padding:calc(var(--nav-h) + 20px) 16px 60px;}
     .genre-filter-row{padding:12px 16px 8px;}
     .discover-more-section{padding:16px 16px 8px;}
     .episode-select-row{padding:12px 16px;}
     .settings-row{flex-wrap:wrap;}
     .upsell-banner{margin:0 16px 20px;}
+    .search-grid{grid-template-columns:repeat(3,1fr);gap:16px 14px;}
   }
   @media (max-width:520px){
     .card-item{width:130px;}
@@ -619,6 +743,10 @@
     .owner-panel{padding:16px;}
     .owner-generate-btn{width:100%;justify-content:center;}
     .owner-generated-code{font-size:14px;letter-spacing:1px;word-break:break-all;}
+    .search-grid{grid-template-columns:repeat(2,1fr);gap:14px 10px;}
+    .upcoming-gallery{aspect-ratio:16/10;}
+    .modal-actions{flex-direction:column;}
+    .modal-actions .pill-btn{width:100%;justify-content:center;}
   }
 </style>
 </head>
@@ -707,6 +835,7 @@
         <li><a href="#" class="nav-link" data-view="tv">TV Shows</a></li>
         <li><a href="#" class="nav-link" data-view="movies">Movies</a></li>
         <li><a href="#" class="nav-link" data-view="anime">Anime</a></li>
+        <li><a href="#" class="nav-link" data-view="upcoming">Upcoming</a></li>
         <li><a href="#" class="nav-link" data-view="mylist">My List</a></li>
       </ul>
     </div>
@@ -736,31 +865,40 @@
       </button>
     </div>
   </nav>
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
   <div class="mobile-nav-links" id="mobile-nav-links">
-    <a href="#" class="nav-link" data-view="home">Home</a>
-    <a href="#" class="nav-link" data-view="tv">TV Shows</a>
-    <a href="#" class="nav-link" data-view="movies">Movies</a>
-    <a href="#" class="nav-link" data-view="anime">Anime</a>
-    <a href="#" class="nav-link" data-view="mylist">My List</a>
-    <a href="#" class="nav-link" data-view="settings">Settings</a>
+    <div class="mobile-nav-head">
+      <span>Menu</span>
+      <button class="mobile-nav-close" id="mobile-nav-close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <a href="#" class="nav-link" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="#" class="nav-link" data-view="tv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>TV Shows</a>
+    <a href="#" class="nav-link" data-view="movies"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M7 3v18M17 3v18M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>Movies</a>
+    <a href="#" class="nav-link" data-view="anime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/></svg>Anime</a>
+    <a href="#" class="nav-link" data-view="upcoming"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Upcoming</a>
+    <a href="#" class="nav-link" data-view="mylist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>My List</a>
+    <a href="#" class="nav-link" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
   </div>
 
   <!-- HOME/BROWSE VIEW -->
   <div id="browse-view">
     <div class="hero" id="hero"></div>
+    <div class="played-row hidden" id="recently-played-row"></div>
     <div class="genre-filter-row" id="genre-filter-row">
       <button class="genre-pill active" data-genre="">All</button>
-      <button class="genre-pill" data-genre="28">💥 Action</button>
-      <button class="genre-pill" data-genre="35">😂 Comedy</button>
-      <button class="genre-pill" data-genre="27">👻 Horror</button>
-      <button class="genre-pill" data-genre="878">🚀 Sci-Fi</button>
-      <button class="genre-pill" data-genre="10749">💕 Romance</button>
-      <button class="genre-pill" data-genre="53">🔪 Thriller</button>
-      <button class="genre-pill" data-genre="18">🎭 Drama</button>
-      <button class="genre-pill" data-genre="16">✨ Animation</button>
-      <button class="genre-pill" data-genre="80">🚔 Crime</button>
-      <button class="genre-pill" data-genre="14">🐉 Fantasy</button>
-      <button class="genre-pill" data-genre="10751">👨‍👩‍👧‍👦 Family</button>
+      <button class="genre-pill" data-genre="28"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>Action</button>
+      <button class="genre-pill" data-genre="35"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Comedy</button>
+      <button class="genre-pill" data-genre="27"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8v10l3-2 2 2 3-2 3 2 2-2 3 2V10a8 8 0 0 0-8-8z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>Horror</button>
+      <button class="genre-pill" data-genre="878"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c2 2.5 4 6.5 4 10.5 0 1.8-.6 3.2-1 4h-6s-1-2.2-1-4C8 8.5 10 4.5 12 2z"/><circle cx="12" cy="10" r="1.4"/><path d="M8.5 16.5L6 21l3.5-2M15.5 16.5L18 21l-3.5-2"/></svg>Sci-Fi</button>
+      <button class="genre-pill" data-genre="10749"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>Romance</button>
+      <button class="genre-pill" data-genre="53"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Thriller</button>
+      <button class="genre-pill" data-genre="18"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>Drama</button>
+      <button class="genre-pill" data-genre="16"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="1.2"/><circle cx="12" cy="17" r="1.2"/><circle cx="7" cy="12" r="1.2"/><circle cx="17" cy="12" r="1.2"/><circle cx="12" cy="12" r="2"/></svg>Animation</button>
+      <button class="genre-pill" data-genre="80"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg>Crime</button>
+      <button class="genre-pill" data-genre="14"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 6-3 12M15 3l-3 6 3 12"/></svg>Fantasy</button>
+      <button class="genre-pill" data-genre="10751"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Family</button>
     </div>
     <div class="rows-wrap" id="rows-wrap"></div>
     <div class="discover-more-section" id="discover-more-section">
@@ -782,6 +920,13 @@
   <div id="search-view" class="hidden">
     <h2 id="search-heading">Results</h2>
     <div class="search-grid" id="search-grid"></div>
+  </div>
+
+  <!-- UPCOMING VIEW -->
+  <div id="upcoming-view" class="hidden">
+    <h2>Coming Soon</h2>
+    <p class="upcoming-view-sub">Movies not out yet — get notified, save them to your list, and watch the trailer while you wait.</p>
+    <div class="search-grid" id="upcoming-grid"></div>
   </div>
 
   <!-- SETTINGS VIEW -->
@@ -852,17 +997,50 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4l-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
         <div>
           <div class="owner-panel-title">Owner Panel</div>
-          <div class="owner-panel-sub">Generate Premium codes to give out to members</div>
+          <div class="owner-panel-sub" id="owner-panel-sub">Generate Premium codes to give out to members</div>
         </div>
       </div>
-      <button class="owner-generate-btn" id="owner-generate-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        Generate New Code
-      </button>
-      <div class="owner-generated-code hidden" id="owner-generated-code"></div>
-      <div class="owner-codes-list-wrap">
-        <div class="owner-codes-list-title">Your generated codes</div>
-        <div class="owner-codes-list" id="owner-codes-list"><p class="row-empty-note">No codes generated yet.</p></div>
+
+      <div class="owner-user-count" id="owner-user-count">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span id="owner-user-count-text">Loading user count...</span>
+      </div>
+
+      <div class="owner-mode-tabs">
+        <button class="owner-mode-tab active" id="owner-mode-codes-btn">🎟️ Generate Codes</button>
+        <button class="owner-mode-tab" id="owner-mode-ban-btn">🚫 Ban Users</button>
+      </div>
+
+      <!-- GENERATE CODES MODE -->
+      <div id="owner-mode-codes">
+        <button class="owner-generate-btn" id="owner-generate-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Generate New Code
+        </button>
+        <div class="owner-generated-code hidden" id="owner-generated-code"></div>
+        <div class="owner-codes-list-wrap">
+          <div class="owner-codes-list-title">Your generated codes</div>
+          <div class="owner-codes-list" id="owner-codes-list"><p class="row-empty-note">No codes generated yet.</p></div>
+        </div>
+      </div>
+
+      <!-- BAN USERS MODE -->
+      <div id="owner-mode-ban" class="hidden">
+        <div class="owner-ban-search-wrap">
+          <input type="text" id="owner-ban-search-input" placeholder="Search by name or email..." autocomplete="off">
+          <div class="owner-ban-dropdown hidden" id="owner-ban-dropdown"></div>
+        </div>
+        <div class="owner-ban-selected hidden" id="owner-ban-selected">
+          <div class="owner-ban-selected-info">
+            <div class="owner-ban-selected-name" id="owner-ban-selected-name"></div>
+            <div class="owner-ban-selected-email" id="owner-ban-selected-email"></div>
+          </div>
+          <button class="owner-ban-btn" id="owner-ban-action-btn">Ban User</button>
+        </div>
+        <div class="owner-codes-list-wrap">
+          <div class="owner-codes-list-title">Currently banned</div>
+          <div class="owner-codes-list" id="owner-banned-list"><p class="row-empty-note">No banned users.</p></div>
+        </div>
       </div>
     </div>
 
@@ -974,6 +1152,46 @@
   </div>
 </div>
 
+<!-- WARNING MODAL — shown on every login/signup -->
+<div class="modal-backdrop hidden" id="warning-modal">
+  <div class="warning-modal-box">
+    <div class="warning-modal-heading">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#FFC107" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>WARNING</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#FFC107" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <p class="warning-modal-desc">We Recommend You Using An AdBlocker App or Extension Due To Ad Pop Ups and They Could Bring You To Sites That You Would NOT Wanna Be In! Hopefully You Use An Adblocker! Thank You, Moh.</p>
+    <button class="warning-continue-btn" id="warning-continue-btn" disabled>CONTINUE (5)</button>
+  </div>
+</div>
+
+<!-- UPCOMING INFO MODAL — no stream yet, so this shows details/gallery/trailer instead of a player -->
+<div class="modal-backdrop hidden" id="upcoming-modal">
+  <div class="modal-box">
+    <button class="modal-close" id="upcoming-modal-close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="upcoming-gallery" id="upcoming-gallery"></div>
+    <div class="modal-details">
+      <h2 id="upcoming-modal-title"></h2>
+      <div class="modal-meta">
+        <span class="upcoming-release-badge" id="upcoming-modal-date"></span>
+      </div>
+      <p class="modal-desc" id="upcoming-modal-desc"></p>
+      <div class="modal-actions">
+        <button class="pill-btn" id="upcoming-mylist-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span id="upcoming-mylist-label">My List</span>
+        </button>
+        <button class="pill-btn" id="upcoming-trailer-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke="none"/></svg>
+          <span>Watch Trailer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -981,7 +1199,7 @@ import {
   GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, updateProfile, deleteUser
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, serverTimestamp
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1121,10 +1339,17 @@ const TMDB_IMG_BACKDROP = "https://image.tmdb.org/t/p/w1280";
    All functions receive: (id, isTV, season, episode)
 =========================================================== */
 const SERVERS = {
-  '1':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
-  '2':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
-  '3':{name:'VidSrc.me', url:(id,tv,s,e)=> tv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`},
-  '4':{name:'VSembed', url:(id,tv,s,e)=> tv ? `https://vsembed.ru/embed/tv/${id}/${s}/${e}` : `https://vsembed.ru/embed/movie/${id}`}
+  '1':{name:'AutoEmbed Test', url:(id,tv,s,e)=> tv ? `https://test.autoembed.cc/embed/tv/${id}/${s}/${e}?autoplay=true` : `https://test.autoembed.cc/embed/movie/${id}?autoplay=true`},
+  '2':{name:'AutoEmbed Player', url:(id,tv,s,e)=> tv ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}` : `https://player.autoembed.cc/embed/movie/${id}`},
+  '3':{name:'Flixy', url:(id,tv,s,e)=> tv ? `https://player.vidify.top/embed/tv/${id}/${s}/${e}?poster=true&autoPlay=true` : `https://player.vidify.top/embed/movie/${id}?poster=true&autoPlay=true`},
+  '4':{name:'VidSrc.to', url:(id,tv,s,e)=> tv ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}` : `https://vidsrc.to/embed/movie/${id}`},
+  '5':{name:'2Embed', url:(id,tv,s,e)=> tv ? `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` : `https://www.2embed.cc/embed/${id}`},
+  '6':{name:'MultiEmbed', url:(id,tv,s,e)=> tv ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` : `https://multiembed.mov/?video_id=${id}&tmdb=1`},
+  '7':{name:'Embed.su', url:(id,tv,s,e)=> tv ? `https://embed.su/embed/tv/${id}/${s}/${e}` : `https://embed.su/embed/movie/${id}`},
+  '8':{name:'VidSrc.xyz', url:(id,tv,s,e)=> tv ? `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.xyz/embed/movie?tmdb=${id}`},
+  '9':{name:'VidSrc.me', url:(id,tv,s,e)=> tv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`},
+  '10':{name:'VidSrc.in', url:(id,tv,s,e)=> tv ? `https://vidsrc.in/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.in/embed/movie?tmdb=${id}`},
+  '11':{name:'VSembed', url:(id,tv,s,e)=> tv ? `https://vsembed.ru/embed/tv/${id}/${s}/${e}` : `https://vsembed.ru/embed/movie/${id}`},
 };
 
 // Builds the ordered fallback list of playable URLs for a resolved movie/tv/anime object.
@@ -1251,10 +1476,10 @@ async function loadTMDBData(){
 =========================================================== */
 const DISCOVER_CATEGORIES = [
   { label:'Trending Now', type:'movie', path:'trending/movie/week', pages:2, badge:'NEW' },
-  { label:'Popular Movies', type:'movie', path:'movie/popular', pages:3 },
-  { label:'Top Rated Movies', type:'movie', path:'movie/top_rated', pages:2 },
-  { label:'Now Playing', type:'movie', path:'movie/now_playing', pages:2 },
-  { label:'Upcoming', type:'movie', path:'movie/upcoming', pages:2 },
+  { label:'Popular Movies', type:'movie', path:'discover/movie?sort_by=popularity.desc', pages:3 },
+  { label:'Top Rated Movies', type:'movie', path:'discover/movie?sort_by=vote_average.desc&vote_count.gte=1000', pages:2 },
+  { label:'Now Playing', type:'movie', path:'discover/movie?sort_by=popularity.desc&primary_release_date.lte=TODAY', pages:2 },
+  { label:'Upcoming', type:'movie', path:'discover/movie?sort_by=popularity.desc&primary_release_date.gte=TODAY', pages:2 },
   { label:'Action Movies', type:'movie', path:'discover/movie?with_genres=28&sort_by=popularity.desc', pages:2 },
   { label:'Comedy Movies', type:'movie', path:'discover/movie?with_genres=35&sort_by=popularity.desc', pages:2 },
   { label:'Horror Movies', type:'movie', path:'discover/movie?with_genres=27&sort_by=popularity.desc', pages:2 },
@@ -1270,9 +1495,11 @@ const DISCOVER_CATEGORIES = [
 ];
 
 async function tmdbFetchPage(path, page){
+  path = path.replace('TODAY', new Date().toISOString().slice(0,10));
   const sep = path.includes('?') ? '&' : '?';
-  const url = `https://api.themoviedb.org/3/${path}${sep}api_key=${TMDB_API_KEY}&page=${page}${adultParam()}`;
+  const url = `https://api.themoviedb.org/3/${path}${sep}api_key=${TMDB_API_KEY}&page=${page}${adultParam()}${certParam(path)}`;
   const res = await fetch(url);
+  if(!res.ok) throw new Error(`TMDB ${res.status} for ${path}`);
   const data = await res.json();
   return data.results || [];
 }
@@ -1294,10 +1521,17 @@ function mapTMDBItem(raw, type, category){
 }
 
 /* ===========================================================
-   CONTENT FILTER — when 18+ content is off (the default), also
-   hide Horror / Thriller / Crime / War titles so suggestions stay
-   appropriate. This filters which titles are shown; it can't edit
-   or censor scenes inside a video (see note in Settings).
+   CONTENT FILTER — when 18+ content is off (the default):
+   - Movies: TMDB certification filter (PG-13 and under only) via
+     discover/movie's certification.lte param — far more reliable
+     than genre guessing, since it uses the actual MPAA rating.
+   - TV & anime: TMDB doesn't offer certification filtering on
+     discover/tv, so Horror/Thriller/Crime/War genres are excluded
+     as the best available signal.
+   Turning the toggle ON removes all of this filtering — every
+   category fetch below skips these params entirely when enabled.
+   This filters which titles are *shown*; it can't edit or censor
+   scenes inside a video (see note in Settings).
 =========================================================== */
 const RESTRICTED_GENRE_IDS = [27, 53, 80, 10752]; // Horror, Thriller, Crime, War
 function passesContentFilter(rawTmdbItem){
@@ -1305,13 +1539,18 @@ function passesContentFilter(rawTmdbItem){
   const ids = rawTmdbItem.genre_ids || [];
   return !ids.some(id => RESTRICTED_GENRE_IDS.includes(id));
 }
+function certParam(path){
+  if(adultContentEnabled()) return '';
+  if(!path.startsWith('discover/movie')) return '';
+  return '&certification_country=US&certification.lte=PG-13';
+}
 
 let DISCOVERED_MOVIES = [];
 let discoverLoaded = false;
 
 async function loadDiscoverCatalog(){
   if(!TMDB_API_KEY) return;
-  const cacheKey = 'vixflix_discover_catalog_v1';
+  const cacheKey = 'vixflix_discover_catalog_v2';
   const cached = LS.get(cacheKey, null);
   if(cached && (Date.now() - cached.ts) < 24*60*60*1000){
     DISCOVERED_MOVIES = cached.data;
@@ -1320,6 +1559,7 @@ async function loadDiscoverCatalog(){
     return;
   }
   const results = [];
+  let failedRequests = 0;
   await Promise.all(DISCOVER_CATEGORIES.map(async cat=>{
     for(let p=1; p<=cat.pages; p++){
       try{
@@ -1331,13 +1571,15 @@ async function loadDiscoverCatalog(){
           if(cat.badge) mapped.badge = cat.badge;
           results.push(mapped);
         });
-      }catch(e){ console.warn('Discover fetch failed:', cat.label, 'page', p, e); }
+      }catch(e){ failedRequests++; console.warn('Discover fetch failed:', cat.label, 'page', p, e); }
     }
   }));
   if(results.length > 0){
     DISCOVERED_MOVIES = results;
     RESOLVED_MOVIES = DISCOVERED_MOVIES;
     LS.set(cacheKey, { ts: Date.now(), data: results });
+  } else if(failedRequests > 0 && typeof toast === 'function'){
+    toast('Could not reach TMDB just now — try again in a moment.');
   }
   discoverLoaded = true;
 }
@@ -1490,8 +1732,9 @@ async function loadAnimeData(){
   animeDataLoaded = true;
 }
 
+let upcomingLoaded = [];
 function allTitles(){
-  return [...RESOLVED_MOVIES, ...RESOLVED_ANIME];
+  return [...RESOLVED_MOVIES, ...RESOLVED_ANIME, ...upcomingLoaded];
 }
 
 let currentUser = null;
@@ -1545,6 +1788,40 @@ function saveMyList(uid, profileId, set){
   LS.set(userKey(uid,`mylist_${profileId}`), Array.from(set));
 }
 
+/* ---- Recently played, shown as pills above the genre filter on Home ---- */
+function getRecentlyPlayed(uid, profileId){
+  return LS.get(userKey(uid, `recent_${profileId}`), []);
+}
+function recordRecentlyPlayed(movie){
+  if(!currentUser || !currentProfile) return;
+  const key = `recent_${currentProfile.id}`;
+  let list = LS.get(userKey(currentUser.uid, key), []);
+  list = list.filter(m => m.id !== movie.id);
+  list.unshift({ id: movie.id, title: movie.title, cover: movie.cover, type: movie.type });
+  list = list.slice(0, 12);
+  LS.set(userKey(currentUser.uid, key), list);
+  renderRecentlyPlayedPills();
+}
+function renderRecentlyPlayedPills(){
+  const wrap = document.getElementById('recently-played-row');
+  if(!wrap || !currentUser || !currentProfile) return;
+  const list = getRecentlyPlayed(currentUser.uid, currentProfile.id);
+  if(list.length === 0){ wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = list.map(m => `
+    <button class="played-pill" data-id="${escapeHtml(String(m.id))}">
+      <img src="${m.cover}" alt="">
+      <span>${escapeHtml(m.title)}</span>
+    </button>
+  `).join('');
+  wrap.querySelectorAll('.played-pill').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const m = allTitles().find(t => String(t.id) === btn.dataset.id) || list.find(t => String(t.id) === btn.dataset.id);
+      if(m) openModal(m);
+    });
+  });
+}
+
 function avatarSVG(){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>';
 }
@@ -1583,6 +1860,40 @@ function closeAddProfileModal(){
 document.getElementById('add-profile-close').onclick = closeAddProfileModal;
 document.getElementById('add-profile-cancel-btn').onclick = closeAddProfileModal;
 addProfileModal.addEventListener('click', (e)=>{ if(e.target===addProfileModal) closeAddProfileModal(); });
+
+/* ===========================================================
+   WARNING MODAL — shown once per session on login/signup, with
+   a 5-second delay before CONTINUE becomes clickable.
+=========================================================== */
+let warningShownThisSession = false;
+function maybeShowWarningModal(){
+  if(warningShownThisSession) return;
+  warningShownThisSession = true;
+  const modal = document.getElementById('warning-modal');
+  const btn = document.getElementById('warning-continue-btn');
+  let secondsLeft = 5;
+  btn.disabled = true;
+  btn.classList.remove('ready');
+  btn.textContent = `CONTINUE (${secondsLeft})`;
+  modal.classList.remove('hidden');
+
+  const timer = setInterval(()=>{
+    secondsLeft--;
+    if(secondsLeft <= 0){
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.classList.add('ready');
+      btn.textContent = 'CONTINUE';
+    } else {
+      btn.textContent = `CONTINUE (${secondsLeft})`;
+    }
+  }, 1000);
+
+  btn.onclick = ()=>{
+    if(btn.disabled) return;
+    modal.classList.add('hidden');
+  };
+}
 
 /* ===========================================================
    SCREEN SWITCHING
@@ -1690,17 +2001,63 @@ function friendlyAuthError(err){
 /* ===========================================================
    AUTH STATE
 =========================================================== */
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user)=>{
   if(user){
     currentUser = user;
+    const status = await syncUserDoc(user);
+    if(status.banned){
+      toast('This account has been banned from VIXFLIX.');
+      currentUser = null;
+      currentProfile = null;
+      await signOut(auth);
+      showScreen('auth-screen');
+      return;
+    }
     initProfilesForUser(user);
     showScreen('profiles-screen');
+    maybeShowWarningModal();
   } else {
     currentUser = null;
     currentProfile = null;
     showScreen('auth-screen');
   }
 });
+
+/* ===========================================================
+   USERS COLLECTION — backs the Ban system, live user count, and
+   keeps Premium status in sync across devices (see redeem/delete
+   code logic). Creates/updates users/{uid} on every login.
+=========================================================== */
+async function syncUserDoc(user){
+  const ref = doc(db, 'users', user.uid);
+  try{
+    const snap = await getDoc(ref);
+    if(!snap.exists()){
+      await setDoc(ref, {
+        email: user.email || '',
+        displayName: user.displayName || '',
+        createdAt: serverTimestamp(),
+        lastSeen: serverTimestamp(),
+        banned: false,
+        premium: false,
+        premiumCode: null
+      });
+      return { banned: false };
+    }
+    const data = snap.data();
+    if(data.banned){
+      return { banned: true };
+    }
+    // Firestore is the source of truth for premium so revocation (deleting a
+    // code) takes effect the next time this account logs in on any device.
+    setPremium(data.premium === true);
+    updateDoc(ref, { lastSeen: serverTimestamp(), email: user.email || '' }).catch(()=>{});
+    return { banned: false };
+  }catch(e){
+    console.warn('User doc sync failed (continuing without it):', e);
+    return { banned: false };
+  }
+}
 
 /* ===========================================================
    PROFILES ("Who's Watching")
@@ -1885,11 +2242,12 @@ function switchView(view){
   document.querySelectorAll('.nav-link').forEach(l=> l.classList.toggle('active', l.dataset.view===view));
   document.getElementById('browse-view').classList.toggle('hidden', !['home','tv','movies','anime','mylist'].includes(view));
   document.getElementById('search-view').classList.add('hidden');
+  document.getElementById('upcoming-view').classList.toggle('hidden', view!=='upcoming');
   document.getElementById('settings-view').classList.toggle('hidden', view!=='settings');
   document.getElementById('genre-filter-row').classList.toggle('hidden', view!=='home' || !isPremium());
   document.getElementById('discover-more-section').classList.toggle('hidden', view!=='home' || !isPremium());
   document.getElementById('browse-view').classList.toggle('no-hero', view!=='home');
-  if(view==='home'){ resetGenreFilter(); updateGenrePillVisibility(); }
+  if(view==='home'){ resetGenreFilter(); updateGenrePillVisibility(); renderRecentlyPlayedPills(); }
   updatePremiumNavVisibility();
 
   if(view==='home'){
@@ -1905,6 +2263,8 @@ function switchView(view){
   } else if(view==='anime'){
     document.getElementById('hero').classList.add('hidden');
     renderRows(RESOLVED_ANIME);
+  } else if(view==='upcoming'){
+    loadUpcoming();
   } else if(view==='mylist'){
     document.getElementById('hero').classList.add('hidden');
     const listItems = allTitles().filter(m=> myList.has(m.id));
@@ -1954,7 +2314,7 @@ document.querySelectorAll('.genre-pill').forEach(pill=>{
     }
     try{
       const [movies, tv] = await Promise.all([
-        fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}`).then(r=>r.json()),
+        fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}${certParam('discover/movie')}`).then(r=>r.json()),
         fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}&sort_by=popularity.desc${adultParam()}`).then(r=>r.json())
       ]);
       const items = [
@@ -1983,7 +2343,7 @@ let discoverMoreLoaded = 0;
 let discoverMoreSeen = new Set();
 let discoverMoreLoading = false;
 const DISCOVER_MORE_CAP = 500;
-const DISCOVER_MORE_ENDPOINTS = ['movie/popular','tv/popular','movie/top_rated','tv/top_rated'];
+const DISCOVER_MORE_ENDPOINTS = ['discover/movie?sort_by=popularity.desc','tv/popular','discover/movie?sort_by=vote_average.desc&vote_count.gte=500','tv/top_rated'];
 
 async function loadDiscoverMore(){
   if(discoverMoreLoading || discoverMoreLoaded >= DISCOVER_MORE_CAP) return;
@@ -1995,7 +2355,8 @@ async function loadDiscoverMore(){
   try{
     const results = await Promise.all(DISCOVER_MORE_ENDPOINTS.map(ep=>{
       const type = ep.startsWith('tv') ? 'tv' : 'movie';
-      return fetch(`https://api.themoviedb.org/3/${ep}?api_key=${TMDB_API_KEY}&page=${discoverMorePage}${adultParam()}`)
+      const sep = ep.includes('?') ? '&' : '?';
+      return fetch(`https://api.themoviedb.org/3/${ep}${sep}api_key=${TMDB_API_KEY}&page=${discoverMorePage}${adultParam()}${certParam(ep)}`)
         .then(r=>r.json()).then(d=>({ type, results: d.results||[] }));
     }));
     results.forEach(({type, results})=>{
@@ -2027,7 +2388,7 @@ document.querySelectorAll('.nav-link, .dd-settings').forEach(link=>{
     e.preventDefault();
     const view = link.dataset.view;
     switchView(view);
-    document.getElementById('mobile-nav-links').classList.remove('open');
+    toggleMobileNav(false);
     document.getElementById('nav-profile').classList.remove('open');
   });
 });
@@ -2113,9 +2474,16 @@ document.getElementById('dd-switch-profile').addEventListener('click', (e)=>{
   showScreen('profiles-screen');
 });
 
-document.getElementById('hamburger-btn').onclick = ()=>{
-  document.getElementById('mobile-nav-links').classList.toggle('open');
-};
+function toggleMobileNav(open){
+  const nav = document.getElementById('mobile-nav-links');
+  const backdrop = document.getElementById('mobile-nav-backdrop');
+  const show = open !== undefined ? open : !nav.classList.contains('open');
+  nav.classList.toggle('open', show);
+  backdrop.classList.toggle('open', show);
+}
+document.getElementById('hamburger-btn').onclick = ()=> toggleMobileNav();
+document.getElementById('mobile-nav-close').onclick = ()=> toggleMobileNav(false);
+document.getElementById('mobile-nav-backdrop').onclick = ()=> toggleMobileNav(false);
 
 window.addEventListener('scroll', ()=>{
   document.getElementById('navbar').classList.toggle('solid', window.scrollY > 40);
@@ -2174,6 +2542,7 @@ async function redeemPremiumCode(){
       return;
     }
     await updateDoc(ref, { used: true, usedBy: currentUser.uid, usedByEmail: currentUser.email, usedAt: serverTimestamp() });
+    await updateDoc(doc(db, 'users', currentUser.uid), { premium: true, premiumCode: code }).catch(()=>{});
     setPremium(true);
     input.value = '';
     msg.textContent = '';
@@ -2212,8 +2581,48 @@ function renderOwnerPanel(){
   if(!isOwner()){ panel.classList.add('hidden'); return; }
   panel.classList.remove('hidden');
   loadOwnerCodesList();
+  loadOwnerUserCount();
 }
 
+/* ---- mode tabs ---- */
+document.getElementById('owner-mode-codes-btn').addEventListener('click', ()=>{
+  document.getElementById('owner-mode-codes-btn').classList.add('active');
+  document.getElementById('owner-mode-ban-btn').classList.remove('active');
+  document.getElementById('owner-mode-codes').classList.remove('hidden');
+  document.getElementById('owner-mode-ban').classList.add('hidden');
+  document.getElementById('owner-panel-sub').textContent = 'Generate Premium codes to give out to members';
+});
+document.getElementById('owner-mode-ban-btn').addEventListener('click', ()=>{
+  document.getElementById('owner-mode-ban-btn').classList.add('active');
+  document.getElementById('owner-mode-codes-btn').classList.remove('active');
+  document.getElementById('owner-mode-ban').classList.remove('hidden');
+  document.getElementById('owner-mode-codes').classList.add('hidden');
+  document.getElementById('owner-panel-sub').textContent = 'Search a member to ban or unban them';
+  loadAllUsersForBanSearch();
+  loadBannedUsersList();
+});
+
+/* ---- user count ---- */
+async function loadOwnerUserCount(){
+  const el = document.getElementById('owner-user-count-text');
+  try{
+    const snap = await getDocs(collection(db, 'users'));
+    const total = snap.size;
+    const tenMinAgo = Date.now() - 10*60*1000;
+    let activeNow = 0;
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      const seen = d.lastSeen && d.lastSeen.toMillis ? d.lastSeen.toMillis() : 0;
+      if(seen >= tenMinAgo) activeNow++;
+    });
+    el.textContent = `${total} registered user${total===1?'':'s'} · ~${activeNow} active in the last 10 min`;
+  }catch(e){
+    console.warn('Failed to load user count', e);
+    el.textContent = "Couldn't load user count — check Firestore rules allow the owner to list users.";
+  }
+}
+
+/* ---- generated codes list (with delete + revoke) ---- */
 async function loadOwnerCodesList(){
   const list = document.getElementById('owner-codes-list');
   list.innerHTML = '<p class="row-empty-note">Loading...</p>';
@@ -2227,17 +2636,43 @@ async function loadOwnerCodesList(){
     const rows = [];
     snap.forEach(docSnap=>{
       const d = docSnap.data();
-      rows.push({ code: docSnap.id, used: !!d.used });
+      rows.push({ code: docSnap.id, used: !!d.used, usedBy: d.usedBy || null, usedByEmail: d.usedByEmail || null });
     });
-    list.innerHTML = rows.map(r => `
-      <div class="owner-code-row">
-        <span>${escapeHtml(r.code)}</span>
-        <span class="owner-code-status ${r.used ? 'used' : 'unused'}">${r.used ? 'Used' : 'Unused'}</span>
-      </div>
-    `).join('');
+    list.innerHTML = '';
+    rows.forEach(r=>{
+      const row = document.createElement('div');
+      row.className = 'owner-code-row';
+      row.innerHTML = `
+        <span>${escapeHtml(r.code)}${r.used && r.usedByEmail ? ` <span style="color:#777;">→ ${escapeHtml(r.usedByEmail)}</span>` : ''}</span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span class="owner-code-status ${r.used ? 'used' : 'unused'}">${r.used ? 'Used' : 'Unused'}</span>
+          <button class="owner-code-delete-btn" data-code="${escapeHtml(r.code)}" data-usedby="${r.usedBy || ''}">Delete</button>
+        </span>
+      `;
+      row.querySelector('.owner-code-delete-btn').addEventListener('click', (e)=> deleteOwnerCode(r.code, r.usedBy));
+      list.appendChild(row);
+    });
   }catch(e){
     console.warn('Failed to load owner codes list', e);
     list.innerHTML = `<p class="row-empty-note">Couldn't load your codes — make sure Firestore rules allow the owner account to list premiumCodes.</p>`;
+  }
+}
+
+async function deleteOwnerCode(code, usedByUid){
+  const sure = confirm(usedByUid
+    ? `Delete code ${code}? This will also revoke Premium from the account that redeemed it.`
+    : `Delete code ${code}?`);
+  if(!sure) return;
+  try{
+    if(usedByUid){
+      await updateDoc(doc(db, 'users', usedByUid), { premium: false, premiumCode: null });
+    }
+    await deleteDoc(doc(db, 'premiumCodes', code));
+    toast(usedByUid ? 'Code deleted and Premium revoked from that account.' : 'Code deleted.');
+    loadOwnerCodesList();
+  }catch(e){
+    console.warn('Delete code failed', e);
+    toast('Could not delete that code — check Firestore rules allow the owner to delete premiumCodes.');
   }
 }
 
@@ -2270,6 +2705,124 @@ document.getElementById('owner-generate-btn').addEventListener('click', async ()
     btn.innerHTML = originalHtml;
   }
 });
+
+/* ---- Ban Users ---- */
+let ownerAllUsersCache = null;
+let ownerSelectedBanUser = null;
+
+async function loadAllUsersForBanSearch(){
+  if(ownerAllUsersCache) return ownerAllUsersCache;
+  try{
+    const snap = await getDocs(collection(db, 'users'));
+    ownerAllUsersCache = [];
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      ownerAllUsersCache.push({ uid: docSnap.id, email: d.email || '', displayName: d.displayName || '', banned: !!d.banned });
+    });
+  }catch(e){
+    console.warn('Failed to load users for ban search', e);
+    ownerAllUsersCache = [];
+    toast("Couldn't load users — check Firestore rules allow the owner to list users.");
+  }
+  return ownerAllUsersCache;
+}
+
+const ownerBanSearchInput = document.getElementById('owner-ban-search-input');
+const ownerBanDropdown = document.getElementById('owner-ban-dropdown');
+
+ownerBanSearchInput.addEventListener('input', async ()=>{
+  const term = ownerBanSearchInput.value.trim().toLowerCase();
+  if(!term){ ownerBanDropdown.classList.add('hidden'); return; }
+  const users = await loadAllUsersForBanSearch();
+  const matches = users.filter(u =>
+    u.email.toLowerCase().includes(term) || u.displayName.toLowerCase().includes(term)
+  ).slice(0, 8);
+  if(matches.length === 0){
+    ownerBanDropdown.innerHTML = `<div class="owner-ban-dropdown-item" style="color:#888;cursor:default;">No matches</div>`;
+  } else {
+    ownerBanDropdown.innerHTML = matches.map(u => `
+      <div class="owner-ban-dropdown-item" data-uid="${u.uid}">
+        <span class="ddi-name">${escapeHtml(u.displayName || u.email || 'Unnamed user')}${u.banned ? ' 🚫' : ''}</span>
+        <span class="ddi-email">${escapeHtml(u.email)}</span>
+      </div>
+    `).join('');
+    ownerBanDropdown.querySelectorAll('.owner-ban-dropdown-item[data-uid]').forEach(el=>{
+      el.addEventListener('click', ()=> selectBanUser(el.dataset.uid));
+    });
+  }
+  ownerBanDropdown.classList.remove('hidden');
+});
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.owner-ban-search-wrap')) ownerBanDropdown.classList.add('hidden');
+});
+
+function selectBanUser(uid){
+  const user = (ownerAllUsersCache || []).find(u=>u.uid === uid);
+  if(!user) return;
+  ownerSelectedBanUser = user;
+  ownerBanDropdown.classList.add('hidden');
+  ownerBanSearchInput.value = user.email || user.displayName;
+  document.getElementById('owner-ban-selected-name').textContent = user.displayName || '(no name)';
+  document.getElementById('owner-ban-selected-email').textContent = user.email;
+  const actionBtn = document.getElementById('owner-ban-action-btn');
+  actionBtn.textContent = user.banned ? 'Unban User' : 'Ban User';
+  actionBtn.classList.toggle('unban-mode', user.banned);
+  document.getElementById('owner-ban-selected').classList.remove('hidden');
+}
+
+document.getElementById('owner-ban-action-btn').addEventListener('click', async ()=>{
+  if(!ownerSelectedBanUser) return;
+  const willBan = !ownerSelectedBanUser.banned;
+  const sure = confirm(willBan
+    ? `Ban ${ownerSelectedBanUser.email}? They'll be signed out and blocked from logging back in.`
+    : `Unban ${ownerSelectedBanUser.email}?`);
+  if(!sure) return;
+  try{
+    await updateDoc(doc(db, 'users', ownerSelectedBanUser.uid), { banned: willBan });
+    ownerSelectedBanUser.banned = willBan;
+    toast(willBan ? `${ownerSelectedBanUser.email} has been banned.` : `${ownerSelectedBanUser.email} has been unbanned.`);
+    const actionBtn = document.getElementById('owner-ban-action-btn');
+    actionBtn.textContent = willBan ? 'Unban User' : 'Ban User';
+    actionBtn.classList.toggle('unban-mode', willBan);
+    ownerAllUsersCache = null; // force refresh next open
+    loadBannedUsersList();
+  }catch(e){
+    console.warn('Ban/unban failed', e);
+    toast('Could not update that user — check Firestore rules allow the owner to update users.');
+  }
+});
+
+async function loadBannedUsersList(){
+  const list = document.getElementById('owner-banned-list');
+  list.innerHTML = '<p class="row-empty-note">Loading...</p>';
+  try{
+    const q = query(collection(db, 'users'), where('banned', '==', true));
+    const snap = await getDocs(q);
+    if(snap.empty){
+      list.innerHTML = '<p class="row-empty-note">No banned users.</p>';
+      return;
+    }
+    list.innerHTML = '';
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      const row = document.createElement('div');
+      row.className = 'owner-code-row';
+      row.innerHTML = `<span>${escapeHtml(d.email || docSnap.id)}</span><button class="owner-code-delete-btn" style="border-color:#2ecc71;color:#2ecc71;">Unban</button>`;
+      row.querySelector('button').addEventListener('click', async ()=>{
+        try{
+          await updateDoc(doc(db, 'users', docSnap.id), { banned: false });
+          toast(`${d.email || docSnap.id} has been unbanned.`);
+          ownerAllUsersCache = null;
+          loadBannedUsersList();
+        }catch(e){ toast('Could not unban that user.'); }
+      });
+      list.appendChild(row);
+    });
+  }catch(e){
+    console.warn('Failed to load banned users', e);
+    list.innerHTML = `<p class="row-empty-note">Couldn't load banned users list.</p>`;
+  }
+}
 
 function renderUpsellBanner(){
   const wrap = document.getElementById('rows-wrap');
@@ -2344,7 +2897,7 @@ document.getElementById('adult-content-toggle').addEventListener('change', (e)=>
   LS.set(userKey(currentUser.uid,'adultContent'), e.target.checked);
   toast(e.target.checked ? '18+ content enabled' : '18+ content disabled');
   // clear cached catalog + anime data so the new filter takes effect right away instead of waiting on the cache
-  localStorage.removeItem('vixflix_discover_catalog_v1');
+  localStorage.removeItem('vixflix_discover_catalog_v2');
   localStorage.removeItem('vixflix_anilist_catalog_v3');
   DISCOVERED_MOVIES = [];
   discoverLoaded = false;
@@ -2421,6 +2974,7 @@ async function openModal(movie){
 
   if(currentServerPool.length > 0){
     playServerAt(0);
+    recordRecentlyPlayed(movie);
   } else {
     playerWrap.innerHTML = `
       <div class="player-placeholder">
@@ -2531,6 +3085,131 @@ document.getElementById('modal-mylist-btn').onclick = ()=>{
   const activeLink = document.querySelector('.nav-link.active');
   if(activeLink) switchView(activeLink.dataset.view);
   if(searchInput.value.trim()) runSearch(searchInput.value.trim());
+};
+
+/* ===========================================================
+   UPCOMING TAB — release-date sorted movies with a dedicated
+   info modal (gallery + trailer + My List), since there's no
+   stream yet for titles that haven't come out.
+=========================================================== */
+async function loadUpcoming(){
+  const grid = document.getElementById('upcoming-grid');
+  if(!TMDB_API_KEY){
+    grid.innerHTML = `<p class="no-results">Add your TMDB API key to load upcoming releases.</p>`;
+    return;
+  }
+  grid.innerHTML = `<p class="no-results">Loading...</p>`;
+  try{
+    const today = new Date().toISOString().slice(0,10);
+    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&sort_by=popularity.desc&primary_release_date.gte=${today}${adultParam()}${certParam('discover/movie')}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const items = (data.results || [])
+      .filter(r => r.poster_path && passesContentFilter(r))
+      .map(r => {
+        const m = mapTMDBItem(r, 'movie', 'Upcoming');
+        m.releaseDate = r.release_date || '';
+        return m;
+      });
+    upcomingLoaded = items;
+    grid.innerHTML = '';
+    if(items.length === 0){
+      grid.innerHTML = `<p class="no-results">No upcoming releases found right now.</p>`;
+      return;
+    }
+    items.forEach(m => grid.appendChild(buildUpcomingCard(m)));
+  }catch(e){
+    console.warn('Failed to load upcoming', e);
+    grid.innerHTML = `<p class="no-results">Couldn't load upcoming releases — try again in a moment.</p>`;
+  }
+}
+
+function buildUpcomingCard(m){
+  const item = document.createElement('div');
+  item.className = 'card-item';
+  const dateLabel = m.releaseDate ? new Date(m.releaseDate + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '';
+  item.innerHTML = `
+    <div class="card">
+      <img src="${m.cover}" alt="${escapeHtml(m.title)}" loading="lazy">
+      <div class="card-overlay"><p class="card-hover-title">${escapeHtml(m.title)}</p></div>
+    </div>
+    ${dateLabel ? `<span class="upcoming-card-date">${dateLabel}</span>` : ''}
+  `;
+  item.querySelector('.card').onclick = ()=> openUpcomingModal(m);
+  return item;
+}
+
+let activeUpcomingMovie = null;
+async function openUpcomingModal(movie){
+  activeUpcomingMovie = movie;
+  document.getElementById('upcoming-modal-title').textContent = movie.title;
+  document.getElementById('upcoming-modal-desc').textContent = movie.desc || 'No description available.';
+  const dateLabel = movie.releaseDate ? new Date(movie.releaseDate + 'T00:00:00').toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }) : 'Release date TBA';
+  document.getElementById('upcoming-modal-date').textContent = dateLabel;
+  const inList = myList.has(movie.id);
+  document.getElementById('upcoming-mylist-btn').classList.toggle('active', inList);
+  document.getElementById('upcoming-mylist-label').textContent = inList ? 'In My List' : 'My List';
+
+  const gallery = document.getElementById('upcoming-gallery');
+  gallery.innerHTML = `<div class="no-images">Loading images...</div>`;
+  document.getElementById('upcoming-modal').classList.remove('hidden');
+
+  if(!movie.tmdbId || !TMDB_API_KEY){
+    gallery.innerHTML = `<div class="no-images">No preview images available.</div>`;
+    return;
+  }
+  try{
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${movie.tmdbId}/images?api_key=${TMDB_API_KEY}`);
+    const data = await res.json();
+    if(activeUpcomingMovie !== movie) return; // a different title was opened while this was loading
+    const backdrops = (data.backdrops || []).slice(0, 3);
+    if(backdrops.length === 0){
+      gallery.innerHTML = movie.backdrop ? `<img src="${movie.backdrop}" alt="">` : `<div class="no-images">No preview images available.</div>`;
+    } else {
+      gallery.innerHTML = backdrops.map(b => `<img src="${TMDB_IMG_BACKDROP}${b.file_path}" alt="">`).join('');
+    }
+  }catch(e){
+    console.warn('Failed to load upcoming images', e);
+    gallery.innerHTML = `<div class="no-images">No preview images available.</div>`;
+  }
+}
+
+function closeUpcomingModal(){
+  document.getElementById('upcoming-modal').classList.add('hidden');
+  activeUpcomingMovie = null;
+}
+document.getElementById('upcoming-modal-close').onclick = closeUpcomingModal;
+document.getElementById('upcoming-modal').addEventListener('click', (e)=>{
+  if(e.target.id === 'upcoming-modal') closeUpcomingModal();
+});
+
+document.getElementById('upcoming-mylist-btn').onclick = ()=>{
+  if(!activeUpcomingMovie) return;
+  if(myList.has(activeUpcomingMovie.id)) myList.delete(activeUpcomingMovie.id);
+  else myList.add(activeUpcomingMovie.id);
+  saveMyList(currentUser.uid, currentProfile.id, myList);
+  const inList = myList.has(activeUpcomingMovie.id);
+  document.getElementById('upcoming-mylist-btn').classList.toggle('active', inList);
+  document.getElementById('upcoming-mylist-label').textContent = inList ? 'In My List' : 'My List';
+  toast(inList ? `Added "${activeUpcomingMovie.title}" to My List` : `Removed "${activeUpcomingMovie.title}" from My List`);
+};
+
+document.getElementById('upcoming-trailer-btn').onclick = async ()=>{
+  if(!activeUpcomingMovie || !activeUpcomingMovie.tmdbId){ toast('No trailer available yet.'); return; }
+  try{
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${activeUpcomingMovie.tmdbId}/videos?api_key=${TMDB_API_KEY}`);
+    const data = await res.json();
+    const results = data.results || [];
+    const trailer = results.find(v => v.site === 'YouTube' && v.type === 'Trailer') || results.find(v => v.site === 'YouTube');
+    if(trailer){
+      window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+    } else {
+      toast('No trailer available for this title yet.');
+    }
+  }catch(e){
+    console.warn('Failed to load trailer', e);
+    toast('Could not load trailer right now.');
+  }
 };
 </script>
 </body>
