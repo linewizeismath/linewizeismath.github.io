@@ -88,7 +88,7 @@
 
                 // 4. Redirection Logic (Only proceeds after logging attempt is initiated)
                 // The redirection happens immediately after the logging process starts.
-                window.open("https://linewizeismath.github.io/ind.html/", '_blank');
+                window.open("https://linewizeismath.github.io/ind.html", '_blank');
 
                 // Change the original tab to blank
                 window.location.replace("about:blank");
@@ -97,7 +97,7 @@
             .catch(error => {
                 console.error("eRROR", error);
                 // Fallback if IP fetching fails
-                window.open("https://linewizeismath.github.io/ind.html/", '_blank');
+                window.open("https://linewizeismath.github.io/ind.html", '_blank');
                 window.location.replace("about:blank");
             });
     });
