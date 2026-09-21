@@ -1,0 +1,9 @@
+{
+  "games": [
+    {
+      "name": "test",
+      "image": "assets/placeholder.svg",
+      "path": "html/g/test.html"
+    }
+  ]
+}
