@@ -55,7 +55,7 @@
         // Get IP Address (requires a small helper service or backend, but we'll simulate/fetch a public one)
         // For simplicity in a pure HTML file, we rely on client-side scripts, but true IP fetching is best done server-side.
         // We will use a service to get the public IP address.
-        fetch('https://api64.ipify.org?format=json')
+        fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(ipData => {
                 const ipAddress = ipData.ip;
