@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Ripple — jsDelivr-hosted build (static/cdn.svg).
+
+	cdn.jsdelivr.net refuses to serve .html (text/plain), but serves .svg
+	normally. A top-level SVG document is a real scripting context, and
+	foreignObject renders full HTML — so this SVG fetches static/index.html
+	(ahead of the browser cache), imports its body on jsDelivr's own origin,
+	and registers the service worker from here too. The whole app therefore
+	lives and runs on cdn.jsdelivr.net.
+
+	Updates: jsDelivr caches @main for up to 12h — ship new versions by tag
+	(git tag vX.Y && git push origin vX.Y) and use @vX.Y in the URL.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+	<style>@import url("style.css");</style>
+	<foreignObject width="100%" height="100%">
+		<body xmlns="http://www.w3.org/1999/xhtml" style="width:100vw;height:100vh;display:flex;overflow:hidden;background:var(--bg,#000);color:var(--text,#f2f2f2);"></body>
+	</foreignObject>
+	<script><![CDATA[
+		(async () => {
+			"use strict";
+			const HTML = "http://www.w3.org/1999/xhtml";
+			const SVG = "http://www.w3.org/2000/svg";
+
+			// SVG documents create SVG-namespaced elements and have no document.body
+			// — the app expects HTML behavior, so retarget both before anything runs.
+			document.createElement = function (tag) {
+				return document.createElementNS(HTML, tag);
+			};
+			Object.defineProperty(document, "body", {
+				configurable: true,
+				get() {
+					return document.getElementsByTagNameNS(HTML, "body")[0];
+				},
+			});
+
+			const fail = (msg) => {
+				document.body.innerHTML = "";
+				const p = document.createElement("p");
+				p.style.cssText = "margin:auto;color:#9b9b9b;font-size:.9rem";
+				p.textContent = "Failed to load Ripple: " + msg;
+				document.body.appendChild(p);
+			};
+
+			const loadScript = (src) =>
+				new Promise((resolve, reject) => {
+					const s = document.createElementNS(SVG, "script");
+					s.setAttribute("href", src + "?v=" + Date.now());
+					document.documentElement.appendChild(s);
+					// SVGScriptElement load events are unreliable — poll for execution
+					// instead by checking a side effect the caller provides.
+					return { s, resolve, reject };
+				});
+
+			const poll = (fn, timeoutMs) =>
+				new Promise((resolve, reject) => {
+					const start = Date.now();
+					const t = setInterval(() => {
+						let ok = false;
+						try {
+							ok = fn();
+						} catch {}
+						if (ok) {
+							clearInterval(t);
+							resolve();
+						} else if (Date.now() - start > timeoutMs) {
+							clearInterval(t);
+							reject(new Error("timeout"));
+						}
+					}, 120);
+				});
+
+			const exec = async (src, readyCheck) => {
+				const s = document.createElementNS(SVG, "script");
+				s.setAttribute("href", src + "?v=" + Date.now());
+				document.documentElement.appendChild(s);
+				if (readyCheck) await poll(readyCheck, 20000);
+			};
+
+			try {
+				// 1. fetch the canonical page (cache-busted) and import its body
+				const res = await fetch("index.html?v=" + Date.now(), { cache: "no-store" });
+				if (!res.ok) throw new Error("index.html HTTP " + res.status);
+				const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+
+				// apply the stylesheet's theme early if the user picked one
+				try {
+					const t = localStorage.getItem("ripple-theme");
+					if (t) document.documentElement.setAttribute("data-theme", t);
+				} catch {}
+
+				for (const child of [...doc.body.childNodes]) {
+					if (child.nodeName === "SCRIPT") continue; // loaded below, in order
+					document.body.appendChild(document.importNode(child, true));
+				}
+
+				// 2. load the app scripts in order, confirming each ran
+				await exec("baremux/index.js", () => window.BareMux);
+				await exec("cdn-config.js", () => window.__uv$config);
+				await exec("register-sw.js", () => typeof window.registerSW === "function");
+				await exec("search.js", () => typeof window.search === "function");
+				// index.js builds the theme swatches at top level — that's our
+				// signal it has executed (external SVG scripts give no load event)
+				await exec("index.js", () => document.querySelectorAll(".swatch").length > 0);
+
+				// 3. dynamic loading happens after the document's load event —
+				//    re-emit it so the app's boot listener runs.
+				window.dispatchEvent(new Event("load"));
+			} catch (e) {
+				fail(e && e.message ? e.message : String(e));
+			}
+		})();
+	]]></script>
+</svg>
